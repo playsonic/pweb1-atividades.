@@ -1,2 +1,2 @@
-# pweb1-atividades.
-atividades da pweb1
+# PWEB1 - Atividade 2
+atividade 2 de PWEB1 - Página Perfil do Estudante
