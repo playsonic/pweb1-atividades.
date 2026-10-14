@@ -1,6 +1,6 @@
 <?php
 $perfil = [
-        'nome,' => 'Dan Mendes',
+        'nome' => 'Dan Mendes',
         'curso' => 'Análise e Desenvolvimento de Sistemas (ADS).',
         'cidade' => 'Boa Viagem - CE',
         'textomim' => 'Sou um estudante de ADS'
@@ -13,11 +13,11 @@ $habilidades = [
     ],
     2 => [
         'habilidade' => 'CSS',
-        'nivel' => 'Avançado'
+        'nivel' => 'Intermediário'
     ],
     3 => [
         'habilidade' => 'JavaScript',
-        'nivel' => 'Intermediário'
+        'nivel' => 'Avançado'
     ],
     4 => [
         'habilidade' => 'PHP',
@@ -62,13 +62,25 @@ $projetos = [
     ],
 ];
 
-$pag = htmlspecialchars($_GET['pag'] ?? "inicio");
 
-$tema_solicitado = htmlspecialchars($_GET['tema'] ?? $_COOKIE['tema'] ?? 'claro');
+if (isset($_GET['formato']) && $_GET['formato'] === 'json') {
+    header('Content-Type: application/json; charset=utf-8');
+    
+    $dados_api = [
+        'perfil' => $perfil,
+        'projetos' => $projetos,
+        'habilidades' => $habilidades
+    ];
+    
+    echo json_encode($dados_api, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE);
+    exit;
+}
 
+$pag = $_GET['pag'] ?? 'inicio';
+
+$tema_solicitado = $_GET['tema'] ?? $_COOKIE['tema'] ?? 'claro';
 
 $tema = in_array($tema_solicitado, ['claro', 'escuro'], true) ? $tema_solicitado : 'claro';
-
 
 if (isset($_GET['tema'])) {
     setcookie('tema', $tema, [
@@ -78,6 +90,16 @@ if (isset($_GET['tema'])) {
         'httponly' => true, 
         'samesite' => 'Lax'
     ]);
+}
+
+$pag_validas = ['inicio', 'habilidades', 'projetos', 'projeto', 'contato'];
+if ($pag === 'projeto') {
+    $id = isset($_GET['id']) ? (int)$_GET['id'] : 0;
+    if (!isset($projetos[$id])) {
+        http_response_code(404);
+    }
+} elseif (!in_array($pag, $pag_validas, true)) {
+    http_response_code(404);
 }
 
 ?>
