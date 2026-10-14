@@ -62,8 +62,23 @@ $projetos = [
     ],
 ];
 
-$palavra = htmlspecialchars($_GET['palavra'] ?? "inicio");
+$pag = htmlspecialchars($_GET['pag'] ?? "inicio");
 
+$tema_solicitado = htmlspecialchars($_GET['tema'] ?? $_COOKIE['tema'] ?? 'claro');
+
+
+$tema = in_array($tema_solicitado, ['claro', 'escuro'], true) ? $tema_solicitado : 'claro';
+
+
+if (isset($_GET['tema'])) {
+    setcookie('tema', $tema, [
+        'expires' => time() + (86400 * 30),
+        'path' => '/',
+        'secure' => true,  
+        'httponly' => true, 
+        'samesite' => 'Lax'
+    ]);
+}
 
 ?>
 <!DOCTYPE html>
