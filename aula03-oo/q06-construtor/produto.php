@@ -30,11 +30,16 @@ class Produto
         echo 'Preço unitário: R$ ' . number_format($this->preco, 2, ',', '.') . "\n";
         echo "Quantidade: {$this->quantidade}\n";
     }
+
+    public function __construct(string $nome, float $preco, int $quantidade = 1)
+    {
+        $this->nome = $nome;
+        $this->preco = $preco;
+        $this->quantidade = $quantidade;
+    }
 }
 
-$produto = new Produto();
-$produto->nome = 'Notebook';
-$produto->preco = 3500.00;
+$produto = new Produto('Notebook', 3500.00, 3);
 $produto->quantidade = 3;
 
 $produto->apresentar();
