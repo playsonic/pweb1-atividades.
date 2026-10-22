@@ -9,16 +9,30 @@ class Aluno
     public float $nota1;
     public float $nota2;
 
-    // 1. calcularMedia(): float
-    //    devolve a média das duas notas
+    public function calcularMedia(): float
+    {
+        return ($this->nota1 + $this->nota2) / 2;
+    }
 
-    // 2. situacao(): string
-    //    usa $this->calcularMedia() e devolve:
-    //    'Aprovado' (média >= 7), 'Recuperação' (média >= 4) ou 'Reprovado'
+    public function situacao(): string
+    {
+        $media = $this->calcularMedia();
+        
+        if ($media >= 7.0) {
+            return 'Aprovado';
+        } elseif ($media >= 4.0) {
+            return 'Recuperação';
+        } else {
+            return 'Reprovado';
+        }
+    }
 
-    // 3. apresentar(): void
-    //    imprime, por exemplo:  Ana: média 8,8 (Aprovado)
-    //    dica: number_format($valor, 1, ',', '.')
+    public function apresentar(): void
+    {
+        $media = $this->calcularMedia();
+        $mediaFormatada = number_format($media, 1, ',', '.');
+        echo "{$this->nome}: média {$mediaFormatada} ({$this->situacao()})\n";
+    }
 }
 
 $ana = new Aluno();
