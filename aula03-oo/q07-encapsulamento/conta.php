@@ -8,24 +8,25 @@ class ContaBancaria
 {
     public string $titular;
     public string $numero;
-    public float $saldo = 0.0;
+    private float $saldo = 0.0;
+    private array $extrato = [];
 
     public function depositar(float $valor): void
     {
         if ($valor <= 0) {
-            echo "Depósito inválido.\n";
-            return;
+            throw new Exception("Depósito inválido.");
         }
         $this->saldo += $valor;
+        $this->registrar('Depósito', $valor);
     }
 
     public function sacar(float $valor): void
     {
         if ($valor <= 0 || $valor > $this->saldo) {
-            echo "Saque inválido ou saldo insuficiente.\n";
-            return;
+            throw new Exception("Saque inválido ou saldo insuficiente.");
         }
         $this->saldo -= $valor;
+        $this->registrar('Saque', $valor);
     }
 
     public function consultarSaldo(): float
@@ -33,11 +34,18 @@ class ContaBancaria
         return $this->saldo;
     }
 
-    public function apresentarDados(): void
+    private function registrar(string $operacao, float $valor): void
     {
-        echo "Titular: {$this->titular}\n";
-        echo "Conta: {$this->numero}\n";
-        echo 'Saldo: R$ ' . number_format($this->consultarSaldo(), 2, ',', '.') . "\n";
+        $this->extrato[] = "$operacao: R$ " . number_format($valor, 2, ',', '.');
+    }
+
+    public function imprimirExtrato(): void
+    {
+        echo "=== EXTRATO ({$this->numero}) ===\n";
+        foreach ($this->extrato as $movimento) {
+            echo $movimento . "\n";
+        }
+        echo "Saldo Final: R$ " . number_format($this->saldo, 2, ',', '.') . "\n";
     }
 }
 
@@ -46,4 +54,4 @@ $conta->titular = 'João';
 $conta->numero = '12345';
 $conta->depositar(1000);
 $conta->sacar(250);
-$conta->apresentarDados();
+$conta->imprimirExtrato();
