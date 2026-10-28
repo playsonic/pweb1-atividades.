@@ -123,26 +123,35 @@ class Perfil {
 }
 
 
-$projetos = [
-    1 => [
-        'titulo' => 'Sistema Pedidos',
-        'descricao' => 'Um sistema para gerenciar pedidos.',
-        'tecnologias' => 'JavaScript, HTML, CSS',
-        'link' => 'https://github.com/playsonic/sistema-pedidos-eng-reversa.git'
-    ],
-    2 => [
-        'titulo' => 'Desenvolvimento Back-end com Node.js e TypeScript',
-        'descricao' => 'Desenvolvimento em Backend.',
-        'tecnologias' => 'TypeScript, Dockerfile',
-        'link' => 'https://github.com/playsonic/Desenvolvimento-Back-end-com-Node.js-TypeScript.git'
-    ],
-    3 => [
-        'titulo' => 'Projeto de POO',
-        'descricao' => 'Varios micros projetos de Programação Orientada a Objetos.',
-        'tecnologias' => 'Python, C++',
-        'link' => 'https://github.com/playsonic/poo-bvg.git'
-    ],
-];
+$perfil = new Perfil(
+    'Dan Mendes',
+    'Análise e Desenvolvimento de Sistemas (ADS).',
+    'ifce - Campus Boa Viagem',
+    'Boa Viagem - CE',
+    'Sou um estudante de ADS',
+    ['HTML', 'CSS', 'JavaScript', 'PHP', 'MySQL', 'C', 'Python', 'C++']
+);
+
+$perfil->adicionarProjeto(new Projeto(
+    'Sistema Pedidos',
+    'Um sistema para gerenciar pedidos.',
+    'JavaScript, HTML, CSS',
+    'https://github.com/playsonic/sistema-pedidos-eng-reversa.git'
+));
+
+$perfil->adicionarProjeto(new Projeto(
+    'Desenvolvimento Back-end com Node.js e TypeScript',
+    'Desenvolvimento em Backend.',
+    'TypeScript, Dockerfile',
+    'https://github.com/playsonic/Desenvolvimento-Back-end-com-Node.js-TypeScript.git'
+));
+
+$perfil->adicionarProjeto(new Projeto(
+    'Projeto de POO',
+    'Varios micros projetos de Programação Orientada a Objetos.',
+    'Python, C++',
+    'https://github.com/playsonic/poo-bvg.git'
+));
 
 
 if (isset($_GET['formato']) && $_GET['formato'] === 'json') {
