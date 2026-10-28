@@ -1,140 +1,201 @@
 # PWEB1 - Atividade 2 
 
-Esta branch contém as resoluções da Atividade 2 da disciplina de Programação Web I.
+Esta branch contém as resoluções da Atividade 4 (versão 2 do projeto) da disciplina de Programação Web I.
 
-## 2 Mapa de rotas: o que cada URL mostra e com qual status:
-http://localhost:8000/?pag=inicio -> [200]: GET /?pag=inicio -> Requisição bem-sucedida. Renderiza a página inicial com as informações de apresentação.
-http://localhost:8000/?pag=habilidades -> [200]: GET /?pag=habilidades -> Requisição bem-sucedida. Renderiza a página listando as habilidades do desenvolvedor.
-http://localhost:8000/?pag=projetos -> [200]: GET /?pag=projetos -> Requisição bem-sucedida. Renderiza a página com a lista de todos os projetos.
-http://localhost:8000/?pag=projeto&id=1 -> [200]: GET /?pag=projeto&id=1 -> Requisição bem-sucedida. O sistema captura o ID, no caso 1, fornecido na URL e renderiza os detalhes exclusivos daquele projeto.
-http://localhost:8000/?pag=projeto&id=2 -> [200]: GET /?pag=projeto&id=2 -> Requisição bem-sucedida. O sistema captura o ID, no caso 2, fornecido na URL e renderiza os detalhes exclusivos daquele projeto.
-http://localhost:8000/?pag=projeto&id=3 -> [200]: GET /?pag=projeto&id=3 -> Requisição bem-sucedida. O sistema captura o ID, no caso 3, fornecido na URL e renderiza os detalhes exclusivos daquele projeto.
-http://localhost:8000/?formato=json -> [200]: GET /?formato=json -> aqui é a pagina da API JSON, ele fez um get sucedido dá pagina do json
+---
 
+## 2. As Classes (Estrutura)
 
-## 3 Saídas do terminal: uma página que existe, uma que não existe, a troca de tema, a API e
-o log do servidor, cada uma com a explicação linha por linha;
+### Classe: `Projeto`
 
-[::1]:50682 Accepted -> O servidor reconheceu o pedido e aceitou a ligação.
-[::1]:50682 [200]: GET /?pag=habilidades -> O navegador solicita a página de habilidades. O código PHP processa a requisição, encontra a página na lista de $pag_validas e devolve o código de estado 200.
-[::1]:50682 Closing -> O servidor terminou de enviar os dados e fechou aquela ligação específica.
-[::1]:50698 Accepted -> O servidor reconheceu o pedido e aceitou a ligação.
-[::1]:50698 [404]: GET /?pag=teste -> Como esta página não existe no array do código PHP, a validação funciona corretamente e força o envio do código de estado 404.
-[::1]:50698 Closing -> O servidor terminou de enviar os dados e fechou aquela ligação específica.
-[::1]:54786 [200]: GET /?tema=claro -> O usuario clica no link para mudar para o tema claro. O servidor executa o bloco de código que aciona o setcookie para gravar a preferência e devolve 200.
-[::1]:54786 Closing -> O servidor terminou de enviar os dados e fechou aquela ligação específica.
-[::1]:54796 Accepted -> O servidor reconheceu o pedido e aceitou a ligação.
-[::1]:54796 [200]: GET /estilo.css -> Imediatamente a seguir, como a página recarregou com a nova classe no `<body>`, o navegador precisa do ficheiro CSS para aplicar as regras visuais. O servidor entrega o ficheiro CSS com sucesso.
-[::1]:54796 Closing -> O servidor terminou de enviar os dados e fechou aquela ligação específica.
-[::1]:49272 Accepted -> O servidor reconheceu o pedido e aceitou a ligação.
-[::1]:49272 [200]: GET /?tema=escuro -> o servidor grava o cookie a nova preferencia, devolve a página,
-[::1]:49272 Closing -> O servidor terminou de enviar os dados e fechou aquela ligação específica.
-[::1]:49280 Accepted -> O servidor reconheceu o pedido e aceitou a ligação.
-[::1]:49280 [200]: GET /estilo.css -> Navegador descarrega o CSS novamente para pintar o ecrã com as novas cores.
-[::1]:49280 Closing -> O servidor terminou de enviar os dados e fechou aquela ligação específica.
-[::1]:49292 Accepted -> O servidor reconheceu o pedido e aceitou a ligação.
-[::1]:49292 [200]: GET /?formato=json -> O utilizador acede ao link da API. O seu código deteta o `$_GET['formato'] === 'json'`, altera o cabeçalho da página, codifica os arrays em JSON e entrega os dados. Como tudo correu bem, o status é 200.
-[::1]:49292 Closing -> O servidor terminou de enviar os dados e fechou aquela ligação específica.
-[::1]:49302 Accepted -> O servidor reconheceu o pedido e aceitou a ligação.
-[::1]:49302 [200]: GET /favicon.ico -> Esta é uma requisição automática. Sempre que abre um site, o navegador tenta descarregar o favicon.ico para mostrar aquele pequeno ícone no separador do navegador. Como o servidor o encontra, ou o navegador aceita o fallback, devolve 200.
-[::1]:49302 Closing -> O servidor terminou de enviar os dados e fechou aquela ligação específica.
+| Atributo / Método | Tipo/Retorno | Visibilidade | Descrição |
+| --- | --- | --- | --- |
+| `$titulo` | `string` | `private` | Armazena o título do projeto. |
+| `$descricao` | `string` | `private` | Armazena a descrição do projeto. |
+| `$tecnologias` | `string` | `private` | Armazena as tecnologias utilizadas. |
+| `$link` | `string` | `private` | Armazena a URL do projeto (ex: GitHub). |
+| `__construct()` | `void` | `public` | Inicializa o objeto e valida se o título não está em branco. |
+| `getTitulo()` | `string` | `public` | Retorna o valor do título. |
+| `getDescricao()` | `string` | `public` | Retorna o valor da descrição. |
+| `getTecnologias()` | `string` | `public` | Retorna o valor das tecnologias. |
+| `getLink()` | `string` | `public` | Retorna o valor do link. |
+| `paraArray()` | `array` | `public` | Converte os atributos privados em um array associativo (útil para a API JSON). |
 
-## 4 Onde usei cada conceito: as linhas do código em que aparece cada recurso da aula;
+### Classe: `Perfil`
 
-```
-$perfil = [
-    'nome' => 'Dan Mendes',
-    'curso' => 'Análise e Desenvolvimento de Sistemas (ADS).',
-    // ...
-];
-$habilidades = ['HTML', 'CSS', 'JavaScript', 'PHP', 'MySQL', 'C', 'Python', 'C++'];
+| Atributo / Método | Tipo/Retorno | Visibilidade | Descrição |
+| --- | --- | --- | --- |
+| `$nome` | `string` | `private` | Armazena o nome do dono do portfólio. |
+| `$curso` | `string` | `private` | Armazena o curso atual. |
+| `$campus` | `string` | `private` | Armazena a instituição/campus. |
+| `$cidade` | `string` | `private` | Armazena a cidade de residência. |
+| `$apresentacao` | `string` | `private` | Texto curto de apresentação. |
+| `$habilidades` | `array` | `private` | Lista de habilidades (strings). |
+| `$projetos` | `array` | `private` | Array associativo de objetos da classe `Projeto`. |
+| `__construct()` | `void` | `public` | Inicializa o perfil e exige no mínimo 5 habilidades. |
+| `adicionarProjeto()` | `void` | `public` | Recebe um objeto `Projeto` e o adiciona ao array `$projetos`. |
+| `getProjeto($id)` | `Projeto` | `public` | Busca e retorna um projeto pelo `$id`. Lança erro se não existir. |
+| `getNome()`... | `string` | `public` | Getters diversos para retornar as informações pessoais. |
+| `getHabilidades()` | `array` | `public` | Retorna a lista de habilidades. |
+| `getProjetos()` | `array` | `public` | Retorna o array de objetos `Projeto`. |
+| `paraArray()` | `array` | `public` | Converte o perfil inteiro (incluindo os projetos) em array para o JSON. |
 
-$projetos = [
-    1 => [
-        'titulo' => 'Sistema Pedidos',
-        'descricao' => 'Um sistema para gerenciar pedidos.',
-        'tecnologias' => 'JavaScript, HTML, CSS',
-        'link' => 'https://github.com/playsonic/sistema-pedidos-eng-reversa.git'
-    ],
-    2 => [
-        'titulo' => 'Desenvolvimento Back-end com Node.js e TypeScript',
-        'descricao' => 'Desenvolvimento em Backend.',
-        'tecnologias' => 'TypeScript, Dockerfile',
-        'link' => 'https://github.com/playsonic/Desenvolvimento-Back-end-com-Node.js-TypeScript.git'
-    ],
-    3 => [
-        'titulo' => 'Projeto de POO',
-        'descricao' => 'Varios micros projetos de Programação Orientada a Objetos.',
-        'tecnologias' => 'Python, C++',
-        'link' => 'https://github.com/playsonic/poo-bvg.git'
-    ],
-];
+---
+
+## 3. Antes e Depois: O tratamento de Erro 404
+
+**Trecho da versão v1 - Abordagem Procedural e Arrays:**
 
 ```
--> Arrays e Estruturas de Dados que foi vistos em aula.
-
-```
-if (isset($_GET['formato']) && $_GET['formato'] === 'json') {
-    header('Content-Type: application/json; charset=utf-8');
-    
-    $dados_api = [
-        'perfil' => $perfil,
-        'projetos' => $projetos,
-        'habilidades' => $habilidades
-    ];
-    
-    echo json_encode($dados_api, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE);
-    exit;
-}
-``` 
--> O uso do $_GET e do if foram vistos em sala, enquanto as flags JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE foram vistas na atividade anterior
-
-```
-$pag = $_GET['pag'] ?? 'inicio';
-
-$tema_solicitado = $_GET['tema'] ?? $_COOKIE['tema'] ?? 'claro';
-
- -> Os Operador de Coalescência Nula e Requisições foram visto em sala e na atividade.
-
-
-if (isset($_GET['tema'])) {
-    setcookie('tema', $tema, [
-        'expires' => time() + (86400 * 30),
-        'path' => '/',
-        'secure' => true,  
-        'httponly' => true, 
-        'samesite' => 'Lax'
-    ]);
-}
-```
--> Definição e Envio de Cookies foi visto na atividade.
-
-```
-if ($pag === 'projeto') {
-    $id = isset($_GET['id']) ? (int)$_GET['id'] : 0;
-    if (!isset($projetos[$id])) {
-        http_response_code(404);
-    }
-} elseif (!in_array($pag, $pag_validas, true)) {
+$id = $_GET['id'] ?? 0;
+if (!isset($projetos[$id])) {
     http_response_code(404);
+    $pagina = 'nao-encontrado';
+    $titulo = 'Projeto não encontrado';
+} else {
+    $projetoAtual = $projetos[$id];
 }
+
+<h2><?php echo $projetoAtual['titulo']; ?></h2>
+
 ```
--> Validações com if/else e Respostas HTTP foi visto em aula e na atividade.
 
-## 5 Decisões e dificuldades: por que a lógica fica no topo, por que validar o tema e o que foi mais difícil.
+**Trecho da versão atual (v2 - Orientação a Objetos e Exceções):**
 
-#### Por que a lógica do PHP fica no topo do arquivo?
+```
+$id = isset($_GET['id']) ? (int)$_GET['id'] : 0;
+try {
+    $projetoAtual = $perfil->getProjeto($id);
+    $titulo = $projetoAtual->getTitulo();
+} catch (Exception $e) {
+    http_response_code(404);
+    $pagina = 'nao-encontrado';
+    $titulo = $e->getMessage();
+}
 
-A lógica precisa ser processada pelo servidor antes que qualquer estrutura de página HTML comece a ser renderizada e enviada para o navegador do usuário. Isso permite alterar cabeçalhos HTTP como header() e setcookie(), tratar redirecionamentos ou bloquear o acesso antes que informações indevidas sejam desenhadas na tela. Isso melhora o fluxo e garante a estabilidade da aplicação.
+<h2><?php echo htmlspecialchars($projetoAtual->getTitulo(), ENT_QUOTES, 'UTF-8'); ?></h2>
 
-#### Por que é necessário validar o tema?
+```
 
-A validação é essencial para manter a segurança e a integridade visual do site, atuando em três frentes principais. Primeiramente, ela previne falhas visuais: se um usuário alterar a URL para algo como ?tema=teste, o PHP geraria `<body class="teste">`. Como não existem regras no CSS para essa classe, o site perderia toda a sua formatação. Nesse sentido, a validação,feita através de uma verificação como o in_array, garante que qualquer valor desconhecido seja revertido automaticamente para um padrão seguro, como o tema claro. Além do aspecto visual, a validação é crucial para a segurança contra injeção de código (XSS). Um usuário mal-intencionado poderia forjar um link contendo scripts maliciosos. Se essa informação fosse impressa diretamente no HTML sem o devido tratamento, o script seria executado. Ao forçar que o sistema aceite apenas as opções estritamente predefinidas, bloqueia-se 100% dessas tentativas de injeção. Por fim, esse processo garante a integridade do cookie. Se o código aceitasse um tema inválido, a função setcookie() gravaria essa falha no navegador do usuário, o que deixaria o site completamente quebrado para ele durante todos os 30 dias de validade estipulados para o cookie.
+**O que mudou e o que melhorou:**
 
-#### Por que a URL ($_GET) tem prioridade sobre o Cookie ($_COOKIE) na definição do tema?
+1. **Encapsulamento junto com Segurança:** Na v1, acessávamos chaves de array do (`['titulo']`) que estava sujeitas a erros de digitação e injeção de HTML. Na v2, chamamos métodos (`getTitulo()`) combinados com `htmlspecialchars()`, protegendo contra ataques.
+2. **Delegação de Responsabilidade:** Na v2, a lógica que verifica se o projeto existe não fica solta no código principal, ela foi delegada para o método `getProjeto()` da classe `Perfil`.
+3. **Tratamento de Exceções:** Usar `try/catch` captura os erros lançados pelas classes de forma muito mais elegante do que vários `if/else`.
 
-No fluxo HTTP, quando utilizamos a função `setcookie()`, o cookie não é disponibilizado imediatamente na variável global `$_COOKIE` durante aquela mesma requisição. A função apenas envia um cabeçalho para o navegador com a instrução de salvar a informação. O PHP só terá acesso a esse novo cookie na próxima requisição. Portanto, se dependêssemos apenas de ler o `$_COOKIE` no momento em que o usuário clica para trocar o tema, a tela não mudaria de cor instantaneamente. Ao priorizar o `$_GET`, garantimos que a aplicação atualize a cor imediatamente na mesma requisição, enquanto atualiza o cookie em segundo plano para visitas futuras.
+---
 
-#### O que foi mais difícil no desenvolvimento?
+## 4. As Classes se Recusam: Testes de Validação (Exceções)
 
-A maior dificuldade foi entender a lógica por trás da função isset(). Inicialmente, não compreendi muito bem o seu funcionamento para verificação de variáveis e chaves de arrays, o que me levou a cometer alguns erros estruturais antes de conseguir implementar as checagens corretamente.
+Ao tentar criar objetos com dados inválidos, as classes utilizam o método construtor (`__construct`) para validar as informações antes de salvar na memória. Se as regras de negócio não forem atendidas, elas lançam uma exceção (`InvalidArgumentException`) que interrompe a execução, impedindo que o objeto passe a existir com um estado inválido e a segurando o código.
+
+### Erro 1: Validação da classe Perfil
+```
+Fatal error: Uncaught InvalidArgumentException: O perfil precisa de 5 ou mais habilidades. in /home/dan/Faculdade/Aulas/Programação Web 1/pweb1-atividades2./projeto/v2/index.php:57 
+Stack trace: 
+#0 /home/dan/Faculdade/Aulas/Programação Web 1/pweb1-atividades2./projeto/v2/index.php(126): Perfil->__construct() 
+#1 {main} thrown in /home/dan/Faculdade/Aulas/Programação Web 1/pweb1-atividades2./projeto/v2/index.php on line 57
+
+```
+
+* O erro vem pois foi lançado pelo método `__construct` da classe `Perfil`. O erro ocorreu porque, tentamos instanciar o `new Perfil(...)` passando um array com menos habilidades do que o mínimo exigido. Então, o objeto não existiu pois o teste `if (count($habilidades) < 5)` identificou a falha e disparou a exceção. Isso aborta o script antes que o PHP consiga alocar a variável `$perfil` na memória, evitando que o portfólio seja renderizado faltando dados obrigatórios.
+
+### Erro 2: Validação da classe Projeto
+
+```
+Fatal error: Uncaught InvalidArgumentException: O projeto precisa de um título. in /home/dan/Faculdade/Aulas/Programação Web 1/pweb1-atividades2./projeto/v2/index.php:11 
+Stack trace: 
+#0 /home/dan/Faculdade/Aulas/Programação Web 1/pweb1-atividades2./projeto/v2/index.php(149): Projeto->__construct() 
+#1 {main} thrown in /home/dan/Faculdade/Aulas/Programação Web 1/pweb1-atividades2./projeto/v2/index.php on line 11
+
+```
+
+* O erro vem pois foi Lançado pelo método `__construct` da classe `Projeto`, originado pela tentativa de criar o projeto na linha 149. Então, o objeto não existiu pois o construtor executou o teste `if (trim($titulo) === '')` e percebeu que o título enviado estava vazio ou só tinha espaços. Ao lançar a exceção, o código parou instantaneamente. Isso impede que comandos como `$this->titulo = $titulo;` sejam executados, garantindo que seja matematicamente impossível existir um "projeto sem nome" dentro do sistema.
+
+---
+
+## 5. Saídas do Terminal (Testando as Rotas)
+
+
+Abaixo estão os resultados reais capturados do servidor local e via `curl` ao testarmos diferentes cenários da aplicação.
+
+### 1. Um projeto que existe (ID válido)
+
+**Log do Servidor:**
+```text
+[Wed Oct 28 20:35:07 2026] [::1]:59172 [200]: GET /?pag=projeto&id=1
+
+```
+
+* Ao acessar um ID válido, o método `$perfil->getProjeto(1)` encontra a chave no array e devolve o objeto `Projeto`. O script flui normalmente, monta a estrutura HTML com os dados (título, descrição, link) e o servidor devolve o código de sucesso **HTTP 200 OK**.
+
+### 2. Um projeto que NÃO existe (ID inválido)
+
+
+```text
+[Wed Oct 28 20:35:35 2026] [::1]:40928 [404]: GET /?pag=projeto&id=5
+
+```
+
+* Ao buscar o ID 5, o método percebe que ele não existe no array e lança uma `InvalidArgumentException`. O bloco `catch` intercepta esse erro e executa a função nativa `http_response_code(404)`. O servidor devolve corretamente o status **HTTP 404 Not Found**, e a página renderiza a mensagem de erro amigável na tela.
+
+### 3. A API (Saída JSON)
+
+**Comando no Terminal (`curl`):**
+
+```bash
+curl -i "http://localhost:8000/?formato=json"
+
+```
+
+**Resposta do Servidor:**
+
+```http
+HTTP/1.1 200 OK
+Host: localhost:8000
+Date: Wed, 28 Oct 2026 23:36:25 GMT
+Connection: close
+X-Powered-By: PHP/8.5.12
+Content-Type: application/json; charset=utf-8
+
+{
+    "nome": "Dan Mendes",
+    "curso": "Análise e Desenvolvimento de Sistemas (ADS).",
+    "campus": "ifce - Campus Boa Viagem",
+    "cidade": "Boa Viagem - CE",
+    "apresentacao": "Sou um estudante de ADS",
+    "habilidades": [
+        "HTML", "CSS", "JavaScript", "PHP", "MySQL", "C", "Python", "C++"
+    ],
+    "projetos": {
+        "1": {
+            "titulo": "Sistema Pedidos",
+            "descricao": "Um sistema para gerenciar pedidos.",
+            "tecnologias": "JavaScript, HTML, CSS",
+            "link": "[https://github.com/playsonic/sistema-pedidos-eng-reversa.git](https://github.com/playsonic/sistema-pedidos-eng-reversa.git)"
+        },
+        "2": {
+            "titulo": "Desenvolvimento Back-end com Node.js e TypeScript",
+            "descricao": "Desenvolvimento em Backend.",
+            "tecnologias": "TypeScript, Dockerfile",
+            "link": "[https://github.com/playsonic/Desenvolvimento-Back-end-com-Node.js-TypeScript.git](https://github.com/playsonic/Desenvolvimento-Back-end-com-Node.js-TypeScript.git)"
+        }
+    }
+}
+
+```
+
+*  Ao receber `?formato=json`, o sistema entra na condição inicial do arquivo. Ele injeta o cabeçalho `Content-Type: application/json` (como visto na resposta do `curl`), pede para a classe `Perfil` converter seus atributos privados e projetos em um array (através do método `paraArray()`, imprime tudo formato JSON legível e dá um `exit`, cancelando a renderização do HTML.
+
+---
+
+## 6. Respostas às Perguntas Técnicas
+
+**a) Por que `json_encode($perfil)` devolve `{}` (um objeto vazio)?**
+A função nativa `json_encode` do PHP só consegue ler e serializar atributos que sejam `public`. Como todos os atributos da classe `Perfil` (nome, curso, habilidades) foram declarados como `private` (privados), a função enxerga o objeto como se estivesse vazio e retorna `{}`. Para resolver isso, foi criada a função `paraArray()`, que acessa os dados privados internamente e devolve um array nativo que o `json_encode` consegue interpretar.
+
+**b) Os objetos `$perfil` e `$projeto` continuam na memória do servidor depois que a página é enviada? Por quê?**
+**Não.** O PHP utiliza uma arquitetura sem estado. Toda vez que um usuário acessa uma página, o PHP levanta toda a memória do zero, executa o script do topo até o fim, envia o HTML pronto para o navegador e imediatamente destrói todos os objetos, variáveis e libera a memória RAM. Na próxima requisição, o `$perfil` e os `$projetos` serão recriados novamente pela função `new`.
+
+**c) Por que os atributos são `private`, e não `public`?**
+Para garantir o **Encapsulamento**. Se os atributos fossem públicos, qualquer parte externa do código poderia alterá-los diretamente de forma perigosa, burlando as regras de negócio e validações. Deixando-os como `private`, a única forma de acessar seus valores é através dos métodos "getters", e a única forma de definir seus estados iniciais é passando pelos testes rigorosos dos construtores.
