@@ -156,14 +156,8 @@ $perfil->adicionarProjeto(new Projeto(
 
 if (isset($_GET['formato']) && $_GET['formato'] === 'json') {
     header('Content-Type: application/json; charset=utf-8');
-    
-    $dados_api = [
-        'perfil' => $perfil,
-        'projetos' => $projetos,
-        'habilidades' => $habilidades
-    ];
-    
-    echo json_encode($dados_api, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE);
+
+    echo json_encode($perfil->paraArray(), JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE);
     exit;
 }
 
@@ -208,72 +202,65 @@ if (!in_array($pag, $pag_validas, true)) {
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Portfólio de <?php echo htmlspecialchars($perfil['nome'], ENT_QUOTES, 'UTF-8'); ?></title>
+    <title>Portfólio de <?php echo htmlspecialchars($perfil->getNome(), ENT_QUOTES, 'UTF-8'); ?></title>
     <link rel="stylesheet" href="estilo.css">
 </head>
 <body class="<?php echo $tema; ?>">
 
     <header>
         <nav>
-            <a href="?pag=inicio">Início</a> | 
-            <a href="?pag=habilidades">Habilidades</a> | 
-            <a href="?pag=projetos">Projetos</a> | 
+            <a href="?pag=inicio">Início</a> |
+            <a href="?pag=habilidades">Habilidades</a> |
+            <a href="?pag=projetos">Projetos</a> |
             <?php if ($tema === 'escuro'): ?>
                 <a href="?tema=claro">Tema Claro</a>
             <?php else: ?>
                 <a href="?tema=escuro">Tema Escuro</a>
-            <?php endif; ?> | 
+            <?php endif; ?> |
             <a href="?formato=json" target="_blank">API JSON</a>
         </nav>
    </header>
     <hr>
 
-
-    <?php if (!in_array($pag, $pag_validas, true)): ?>
+    <?php if (!in_array($pag, $pag_validas, true) || ($pagina ?? '') === 'nao-encontrado'): ?>
         <h2>Erro 404</h2>
-        <p>Página não encontrada.</p>
+        <p><?php echo htmlspecialchars($titulo ?? 'Página não encontrada.', ENT_QUOTES, 'UTF-8'); ?></p>
 
     <?php elseif ($pag === 'inicio'): ?>
         <h1>Sobre mim</h1>
-        <p><?php echo "Olá, meu nome é " . htmlspecialchars($perfil['nome'], ENT_QUOTES, 'UTF-8') . " É um prazer te conhecer."; ?></p>
-        <p><?php echo htmlspecialchars($perfil['textomim'], ENT_QUOTES, 'UTF-8'); ?></p>
+        <p><?php echo "Olá, meu nome é " . htmlspecialchars($perfil->getNome(), ENT_QUOTES, 'UTF-8') . " É um prazer te conhecer."; ?></p>
+        <p><?php echo htmlspecialchars($perfil->getApresentacao(), ENT_QUOTES, 'UTF-8'); ?></p>
 
-        <p><?php echo "No Curso de " . htmlspecialchars($perfil['curso'], ENT_QUOTES, 'UTF-8'); ?></p>
-        <p><?php echo "Na Cidade de " . htmlspecialchars($perfil['cidade'], ENT_QUOTES, 'UTF-8'); ?></p>
+        <p><?php echo "No Curso de " . htmlspecialchars($perfil->getCurso(), ENT_QUOTES, 'UTF-8'); ?> (<?php echo htmlspecialchars($perfil->getCampus(), ENT_QUOTES, 'UTF-8'); ?>)</p>
+        <p><?php echo "Na Cidade de " . htmlspecialchars($perfil->getCidade(), ENT_QUOTES, 'UTF-8'); ?></p>
 
     <?php elseif ($pag === 'habilidades'): ?>
         <h1>Habilidades</h1>
-        <p>Essa é a minha quantidade de habilidades: <strong><?php echo count($habilidades); ?></strong></p>
-        <p>Lista Delas: <?php echo htmlspecialchars(implode(', ', $habilidades), ENT_QUOTES, 'UTF-8'); ?></p>
+        <p>Essa é a minha quantidade de habilidades: <strong><?php echo count($perfil->getHabilidades()); ?></strong></p>
+        <p>Lista Delas: <?php echo htmlspecialchars(implode(', ', $perfil->getHabilidades()), ENT_QUOTES, 'UTF-8'); ?></p>
 
     <?php elseif ($pag === 'projetos'): ?>
         <h2>Projetos</h2>
         <ul>
-            <?php foreach ($projetos as $id_proj => $proj): ?>
+            <?php foreach ($perfil->getProjetos() as $id_proj => $projObj): ?>
                 <li>
                     <a href="?pag=projeto&id=<?php echo $id_proj; ?>">
-                        <?php echo htmlspecialchars($proj['titulo'], ENT_QUOTES, 'UTF-8'); ?>
+                        <?php echo htmlspecialchars($projObj->getTitulo(), ENT_QUOTES, 'UTF-8'); ?>
                     </a>
                 </li>
             <?php endforeach; ?>
         </ul>
 
     <?php elseif ($pag === 'projeto'): ?>
-        <?php $id = isset($_GET['id']) ? (int)$_GET['id'] : 0; ?>
-        <?php if (!isset($projetos[$id])): ?>
-            <h2>Erro 404</h2>
-            <p>Projeto não encontrado.</p>
-        <?php else: ?>
-            <h2><?php echo htmlspecialchars($projetos[$id]['titulo'], ENT_QUOTES, 'UTF-8'); ?></h2>
-            <p><?php echo htmlspecialchars($projetos[$id]['descricao'], ENT_QUOTES, 'UTF-8'); ?></p>
-            <p><strong>Tecnologias:</strong> <?php echo htmlspecialchars($projetos[$id]['tecnologias'], ENT_QUOTES, 'UTF-8'); ?></p>
-            <p><a href="<?php echo htmlspecialchars($projetos[$id]['link'], ENT_QUOTES, 'UTF-8'); ?>" target="_blank">Ver no GitHub</a></p>
-        <?php endif; ?>
+        <h2><?php echo htmlspecialchars($projetoAtual->getTitulo(), ENT_QUOTES, 'UTF-8'); ?></h2>
+        <p><?php echo htmlspecialchars($projetoAtual->getDescricao(), ENT_QUOTES, 'UTF-8'); ?></p>
+        <p><strong>Tecnologias:</strong> <?php echo htmlspecialchars($projetoAtual->getTecnologias(), ENT_QUOTES, 'UTF-8'); ?></p>
+        <p><a href="<?php echo htmlspecialchars($projetoAtual->getLink(), ENT_QUOTES, 'UTF-8'); ?>" target="_blank">Ver no GitHub</a></p>
     <?php endif; ?>
 
     <footer>
         <hr>
-        <p>&copy; <?php echo date('Y'); ?> <?php echo htmlspecialchars($perfil['nome'], ENT_QUOTES, 'UTF-8'); ?>. Todos os direitos reservados.</p>
+        <p>&copy; <?php echo date('Y'); ?> <?php echo htmlspecialchars($perfil->getNome(), ENT_QUOTES, 'UTF-8'); ?>. Todos os direitos reservados.</p>
         <p>Entre em contato conosco através do sistema.</p>
     </footer>
 
