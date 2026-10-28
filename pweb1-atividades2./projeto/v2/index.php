@@ -184,13 +184,22 @@ if (isset($_GET['tema'])) {
 }
 
 $pag_validas = ['inicio', 'habilidades', 'projetos', 'projeto'];
-if ($pag === 'projeto') {
-    $id = isset($_GET['id']) ? (int)$_GET['id'] : 0;
-    if (!isset($projetos[$id])) {
-        http_response_code(404);
-    }
-} elseif (!in_array($pag, $pag_validas, true)) {
+$projetoAtual = null;
+
+if (!in_array($pag, $pag_validas, true)) {
     http_response_code(404);
+    $pagina = 'nao-encontrado';
+} elseif ($pag === 'projeto') {
+    $id = isset($_GET['id']) ? (int)$_GET['id'] : 0;
+
+    try {
+        $projetoAtual = $perfil->getProjeto($id);
+        $titulo = $projetoAtual->getTitulo();
+    } catch (Exception $e) {
+        http_response_code(404);
+        $pagina = 'nao-encontrado';
+        $titulo = $e->getMessage();
+    }
 }
 
 ?>
