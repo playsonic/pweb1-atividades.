@@ -1,4 +1,48 @@
 <?php
+
+class Projeto {
+    private string $titulo;
+    private string $descricao;
+    private string $tecnologias;
+    private string $link;
+
+    public function __construct(string $titulo, string $descricao, string $tecnologias, string $link) {
+        if (trim($titulo) === '') {
+            throw new InvalidArgumentException("O projeto precisa de um título.");
+        }
+
+        $this->titulo = $titulo;
+        $this->descricao = $descricao;
+        $this->tecnologias = $tecnologias;
+        $this->link = $link;
+    }
+
+    public function getTitulo(): string {
+        return $this->titulo;
+    }
+
+    public function getDescricao(): string {
+        return $this->descricao;
+    }
+
+    public function getTecnologias(): string {
+        return $this->tecnologias;
+    }
+
+    public function getLink(): string {
+        return $this->link;
+    }
+
+    public function paraArray(): array {
+        return [
+            'titulo' => $this->titulo,
+            'descricao' => $this->descricao,
+            'tecnologias' => $this->tecnologias,
+            'link' => $this->link
+        ];
+    }
+}
+
 $perfil = [
         'nome' => 'Dan Mendes',
         'curso' => 'Análise e Desenvolvimento de Sistemas (ADS).',
