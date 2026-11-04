@@ -21,6 +21,10 @@ Teste 4: Polimorfismo no método getDetalhes()
 -> Professor: Roberto | Disciplina: Química
 OK, aceito: Polimorfismo funcionou corretamente.
 
+Teste 5: Recusar cadastro de usuário com matrícula duplicada na lista
+OK, recusado: Regra 5 falhou: A matrícula '999' já está cadastrada.
+
+
 ```
 
 **Explicação de cada linha:**
@@ -32,6 +36,8 @@ Teste 2: Testa a validação cronológica no construtor de Alugado. Comprova que
 Teste 3: Testa a relação de composição. Comprova que a classe Alugado recebe e armazena corretamente múltiplos objetos Livro em seu array interno.
 
 Teste 4: Testa o polimorfismo orientado a objetos. Comprova que o método herdado getDetalhes() entrega retornos distintos e customizados dependendo se a instância é Aluno ou Professor.
+
+Teste 5: Testa a validação de regras de negócio na camada de controle. Comprova que o sistema impede o registro de matrículas duplicadas percorrendo a lista de usuários ativos antes de instanciar um novo objeto, garantindo a integridade dos dados e respeitando o Princípio da Responsabilidade Única ao retirar essa verificação do construtor da classe Usuario.
 
 ## Camada web
 
