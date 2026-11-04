@@ -68,11 +68,23 @@ try {
 echo "\n";
 
 
-echo "Teste 5: Recusar cadastro de usuário com matrícula duplicada\n";
+echo "Teste 5: Recusar cadastro de usuário com matrícula duplicada na lista\n";
 try {
-    $primeiroAluno = new Aluno("999", "Ana Souza", "ana@escola.com", "Enfermagem");
+    $listaUsuariosMock = [];
     
-    $segundoAluno = new Aluno("999", "Bruno Lima", "bruno@escola.com", "Edificações");
+    $primeiroAluno = new Aluno("999", "Ana Souza", "ana@escola.com", "Enfermagem");
+    $listaUsuariosMock[] = $primeiroAluno;
+    
+    $novaMatricula = "999";
+    
+    foreach ($listaUsuariosMock as $u) {
+        if ($u->getMatricula() === $novaMatricula) {
+            throw new Exception("Regra 5 falhou: A matrícula '$novaMatricula' já está cadastrada.");
+        }
+    }
+    
+    $segundoAluno = new Aluno($novaMatricula, "Bruno Lima", "bruno@escola.com", "Edificações");
+    $listaUsuariosMock[] = $segundoAluno;
     
     echo "ERRO: a operação com matrícula duplicada foi aceita e não deveria.\n";
 } catch (Exception $e) {

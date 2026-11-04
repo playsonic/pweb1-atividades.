@@ -12,10 +12,6 @@ abstract class Usuario {
             throw new Exception("Regra 1 falhou: O e-mail '$email' não é válido.");
         }
         
-        if (self::matriculaExiste($matricula)) {
-        throw new Exception("Regra 5 falhou: A matrícula '$matricula' já está cadastrada.");
-    }
-        
         $this->matricula = $matricula;
         $this->nome = $nome;
         $this->email = $email;
@@ -47,13 +43,6 @@ abstract class Usuario {
             'alugados' => $alugadosArray
         ];
     }
-
-    private static function matriculaExiste(string $matricula): bool {
-    global $pdo; 
-    $stmt = $pdo->prepare("SELECT COUNT(*) FROM usuarios WHERE matricula = ?");
-    $stmt->execute([$matricula]);
-    return $stmt->fetchColumn() > 0;
-}
 
     public function getMatricula(): string { return $this->matricula; }
     public function getNome(): string { return $this->nome; }

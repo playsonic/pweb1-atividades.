@@ -86,6 +86,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $email = $_POST['email'] ?? '';
             $especifico = $_POST['especifico'] ?? '';
 
+            foreach ($listaUsuarios as $u) {
+                if ($u->getMatricula() === $matricula) {
+                    throw new Exception("Regra 5 falhou: A matrícula '$matricula' já está cadastrada.");
+                }
+            }
+
+
             if ($tipo === 'professor') {
                 $novoUsuario = new Professor($matricula, $nome, $email, $especifico);
             } else {
