@@ -37,8 +37,6 @@ php teste.php
 ![Tela Cadastrar Membro](docs/Cadastrar_Membro.png)
 ![Tela Registrar Aluguer](docs/Registar_Aluguer.png)
 
-Aqui estão as tabelas corrigidas e formatadas corretamente, sem quebras de linha indesejadas nas células:
-
 ## Rotas
 
 | URL | O que mostra | Método | Status |
