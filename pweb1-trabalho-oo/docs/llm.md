@@ -4,15 +4,23 @@ Registre pelo menos 5 interações relevantes. Em pelo menos uma, mostre um erro
 
 ## Interação 1
 
-- **Ferramenta e data:**
-- **Prompt:**
+- **Ferramenta e data:** Gemini 03/11/2026
+- **Prompt:** Me faça um css simples para código em anexo (index.php)
 
 ```text
-(cole aqui o prompt que você escreveu)
+Me faça um css simples para código em anexo.
 ```
 
-- **Resumo da resposta:**
-- **O que aceitei, modifiquei ou rejeitei, e por quê:**
+- **Resumo da resposta:** Ele me deu o código em CSS.
+- **O que aceitei, modifiquei ou rejeitei, e por quê:** acresentei isso:
+
+```CSS
+.linha{
+    border: 0; 
+    border-top: 1px solid #ddd; 
+    margin: 15px 0;
+}
+```
 
 ## Interação 2
 
