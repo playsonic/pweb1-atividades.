@@ -29,6 +29,7 @@ try {
 }
 echo "\n";
 
+
 echo "Teste 3: Criar Aluguel válido com Composição de Livros\n";
 try {
     $profValido = new Professor("101", "Prof. Silva", "silva@escola.com", "Física");
@@ -63,5 +64,18 @@ try {
     echo "OK, aceito: Polimorfismo funcionou corretamente.\n";
 } catch (Exception $e) {
     echo "ERRO inesperado: {$e->getMessage()}\n";
+}
+echo "\n";
+
+
+echo "Teste 5: Recusar cadastro de usuário com matrícula duplicada\n";
+try {
+    $primeiroAluno = new Aluno("999", "Ana Souza", "ana@escola.com", "Enfermagem");
+    
+    $segundoAluno = new Aluno("999", "Bruno Lima", "bruno@escola.com", "Edificações");
+    
+    echo "ERRO: a operação com matrícula duplicada foi aceita e não deveria.\n";
+} catch (Exception $e) {
+    echo "OK, recusado: {$e->getMessage()}\n";
 }
 echo "\n";
