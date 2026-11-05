@@ -4,7 +4,7 @@
 
 **Autor(a):** Dan Mendes de Souza Nogueira Ribeiro
 **Tema:** 02 Biblioteca do Campus
-**Vídeo:** https://youtu.be/MEnWLYgS-co?si=6WsB0uuAYJanuRur
+**Vídeo:** https://youtu.be/EcaTeookx5c
 
 ## O problema
 
