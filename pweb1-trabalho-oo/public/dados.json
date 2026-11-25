@@ -1,0 +1,112 @@
+{
+    "usuarios": [
+        {
+            "tipo": "Aluno",
+            "matricula": "123",
+            "nome": "Fulano da silva",
+            "email": "fulano@gmail.com",
+            "total_alugueis": 3,
+            "alugados": [
+                {
+                    "dataAluguel": "2026-11-04",
+                    "dataDevolucao": "2026-11-05",
+                    "devolvido": true,
+                    "quantidade_livros": 1,
+                    "itens_alugados": [
+                        {
+                            "isbn": "978-2",
+                            "titulo": "Banco de Dados",
+                            "autor": "Maria Silva",
+                            "anoPublicacao": 2021
+                        }
+                    ]
+                },
+                {
+                    "dataAluguel": "2026-11-04",
+                    "dataDevolucao": "2026-11-05",
+                    "devolvido": true,
+                    "quantidade_livros": 1,
+                    "itens_alugados": [
+                        {
+                            "isbn": "978-2",
+                            "titulo": "Banco de Dados",
+                            "autor": "Maria Silva",
+                            "anoPublicacao": 2021
+                        }
+                    ]
+                },
+                {
+                    "dataAluguel": "2026-11-04",
+                    "dataDevolucao": "2026-11-05",
+                    "devolvido": false,
+                    "quantidade_livros": 1,
+                    "itens_alugados": [
+                        {
+                            "isbn": "978-2",
+                            "titulo": "Banco de Dados",
+                            "autor": "Maria Silva",
+                            "anoPublicacao": 2021
+                        }
+                    ]
+                }
+            ],
+            "curso": "ADS"
+        },
+        {
+            "tipo": "Aluno",
+            "matricula": "1234",
+            "nome": "Fulana da Silva",
+            "email": "fulana@gmail.com",
+            "total_alugueis": 0,
+            "alugados": [],
+            "curso": "POO"
+        }
+    ],
+    "alugueis": [
+        {
+            "dataAluguel": "2026-11-04",
+            "dataDevolucao": "2026-11-05",
+            "devolvido": true,
+            "quantidade_livros": 1,
+            "itens_alugados": [
+                {
+                    "isbn": "978-2",
+                    "titulo": "Banco de Dados",
+                    "autor": "Maria Silva",
+                    "anoPublicacao": 2021
+                }
+            ],
+            "usuario_matricula": "123"
+        },
+        {
+            "dataAluguel": "2026-11-04",
+            "dataDevolucao": "2026-11-05",
+            "devolvido": true,
+            "quantidade_livros": 1,
+            "itens_alugados": [
+                {
+                    "isbn": "978-2",
+                    "titulo": "Banco de Dados",
+                    "autor": "Maria Silva",
+                    "anoPublicacao": 2021
+                }
+            ],
+            "usuario_matricula": "123"
+        },
+        {
+            "dataAluguel": "2026-11-04",
+            "dataDevolucao": "2026-11-05",
+            "devolvido": false,
+            "quantidade_livros": 1,
+            "itens_alugados": [
+                {
+                    "isbn": "978-2",
+                    "titulo": "Banco de Dados",
+                    "autor": "Maria Silva",
+                    "anoPublicacao": 2021
+                }
+            ],
+            "usuario_matricula": "123"
+        }
+    ]
+}

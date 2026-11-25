@@ -1,0 +1,11 @@
+respostas.md
+routes/web.php
+resources/views/layouts/app.blade.php
+resources/views/partials/menu.blade.php
+resources/views/cardapio.blade.php
+resources/views/produtos/index.blade.php
+resources/views/produtos/show.blade.php
+resources/views/inscricao.blade.php
+app/Http/Controllers/CardapioController.php
+app/Http/Controllers/ProdutoController.php
+app/Http/Controllers/InscricaoController.php
