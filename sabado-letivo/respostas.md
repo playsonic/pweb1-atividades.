@@ -96,14 +96,90 @@ b) Usar `route('inicio')` em vez de `href="/"` promove a manutenção centraliza
 a) Isso acontece graças ao polimorfismo da orientação a objetos. O array $produtos percorrido pelo @forelse na view reúne instâncias de duas classes filhas distintas, ProdutoPorPeso e ProdutoUnitario, que herdam da mesma classe mãe abstrata (App\Domain\Feira\Produto) e implementam, cada uma à sua maneira, o contrato do método calcularPreco(float $quantidade). Por meio do polimorfismo, a view não precisa verificar qual é o tipo concreto de cada objeto com estruturas if/else: ela apenas invoca a mesma assinatura $produto->calcularPreco(2) e o PHP decide, em tempo de execução, qual implementação rodar de acordo com a classe real daquela instância, executando o cálculo por quilo (que aceita valores fracionados) quando o objeto é ProdutoPorPeso, ou validando se a quantidade é um número inteiro antes de multiplicar pelo preço unitário quando o objeto é ProdutoUnitario.
 b) Na requisição `GET /produtos`, o navegador envia o pedido ao ponto de entrada do Laravel (`public/index.php`), que consulta o arquivo `routes/web.php` e encontra a rota `Route::get('/produtos', [ProdutoController::class, 'index'])`, acionando o método `index()` do `ProdutoController`. É nesse momento que as classes de domínio (`App\Domain\Feira\Produto`, `ProdutoPorPeso` e `ProdutoUnitario`) entram no fluxo, pois o controller chama `$this->itens()` (e `criar()` para os itens da sessão) para instanciar esses objetos, aplicando as validações do construtor e encapsulando as regras de negócio de cada produto. Em seguida, o controller repassa a lista para `view('produtos.index')`, onde o motor Blade monta a página combinando `layouts/app.blade.php` e `partials/menu.blade.php` e interage novamente com os objetos de domínio, invocando métodos como `$produto->getNome()`, `$produto->tipo()`, `$produto->calcularPreco(2)` e `$produto->getEstoque()`, até enviar o HTML final renderizado de volta ao navegador com status `200 OK`.
 
-## R06: Detalhe, abort(404) e fallback
+#### R06: Detalhe, abort(404) e fallback
 
 ### Saídas
 ```
-(cole aqui o curl.exe -i de /produtos/99 e /qualquer-coisa: primeira linha e Content-Type)
+HTTP/1.1 404 Not Found
+Host: 127.0.0.1:8000
+Connection: close
+X-Powered-By: PHP/8.5.13
+Cache-Control: no-cache, private
+date: Sat, 28 Nov 2026 15:38:41 GMT
+Content-Type: text/html; charset=utf-8
+Set-Cookie: XSRF-TOKEN=eyJpdiI6ImRnKzhQenV1QnU3UkNIajRhSncwd3c9PSIsInZhbHVlIjoia0hNOEhjU1l2ZEtQbjRTaGRnM0Vid2VlQVZmSWhQWExRSk1oTG1vR3BTcHZkd1JMN295UWVydDR1OEFMVkRjOVVLTGhnS1ZaT0JQTVRIUlE4U2lkaW5zMTI2RUpOVkJtUEJjY2hublpCUjJIV09IRzJZWXp1RDB6Q3F5N0lEblgiLCJtYWMiOiIyZTNkMzY4MDQ3NGI3MTFjMmM2NjcwNTMxNTEwZmFkNTU0NDZmNjkzZmRlOTA1OGM1MjNmNzJkYTBmOWE2YTMxIiwidGFnIjoiIn0%3D; expires=Sat, 28 Nov 2026 17:38:41 GMT; Max-Age=7200; path=/; samesite=lax
+Set-Cookie: laravel-session=eyJpdiI6IktxNzl3UDJQT1hhY2NBR3g2dzI5THc9PSIsInZhbHVlIjoiKzE0UEVLMUVWOXFzNTFEaktVeG5taG1Vb2c4Z3BJTzdXdEQ5c1RUc3F6ZmZ4VDBPMXRNRjZKcnM5ZW51bzl5dWU2ZS9waVdNRHhlbU5PRmlwQklKK252dk5wYlNhVit5ZGhvM0pwMG8wTHVlQlZmaE9nc0VTcFdWU0pwMjdleE0iLCJtYWMiOiIyZDU5ZTA4ZDg5Mjc1Y2JmOGU2NDgwM2QwNjU4NjBiYTY5NmRlZDBiZmZiYmRkYzE0YzZmZjE5N2FiOGJhY2RlIiwidGFnIjoiIn0%3D; expires=Sat, 28 Nov 2026 17:38:41 GMT; Max-Age=7200; path=/; httponly; samesite=lax
+
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+
+        <title>Not Found</title>
+
+        <style>
+            /*! normalize.css v8.0.1 | MIT License | github.com/necolas/normalize.css */html{line-height:1.15;-webkit-text-size-adjust:100%}body{margin:0}a{background-color:transparent}code{font-family:monospace,monospace;font-size:1em}[hidden]{display:none}html{font-family:system-ui,-apple-system,BlinkMacSystemFont,Segoe UI,Roboto,Helvetica Neue,Arial,Noto Sans,sans-serif,Apple Color Emoji,Segoe UI Emoji,Segoe UI Symbol,Noto Color Emoji;line-height:1.5}*,:after,:before{box-sizing:border-box;border:0 solid #e2e8f0}a{color:inherit;text-decoration:inherit}code{font-family:Menlo,Monaco,Consolas,Liberation Mono,Courier New,monospace}svg,video{display:block;vertical-align:middle}video{max-width:100%;height:auto}.bg-white{--bg-opacity:1;background-color:#fff;background-color:rgba(255,255,255,var(--bg-opacity))}.bg-gray-100{--bg-opacity:1;background-color:#f7fafc;background-color:rgba(247,250,252,var(--bg-opacity))}.border-gray-200{--border-opacity:1;border-color:#edf2f7;border-color:rgba(237,242,247,var(--border-opacity))}.border-gray-400{--border-opacity:1;border-color:#cbd5e0;border-color:rgba(203,213,224,var(--border-opacity))}.border-t{border-top-width:1px}.border-r{border-right-width:1px}.flex{display:flex}.grid{display:grid}.hidden{display:none}.items-center{align-items:center}.justify-center{justify-content:center}.font-semibold{font-weight:600}.h-5{height:1.25rem}.h-8{height:2rem}.h-16{height:4rem}.text-sm{font-size:.875rem}.text-lg{font-size:1.125rem}.leading-7{line-height:1.75rem}.mx-auto{margin-left:auto;margin-right:auto}.ml-1{margin-left:.25rem}.mt-2{margin-top:.5rem}.mr-2{margin-right:.5rem}.ml-2{margin-left:.5rem}.mt-4{margin-top:1rem}.ml-4{margin-left:1rem}.mt-8{margin-top:2rem}.ml-12{margin-left:3rem}.-mt-px{margin-top:-1px}.max-w-xl{max-width:36rem}.max-w-6xl{max-width:72rem}.min-h-screen{min-height:100vh}.overflow-hidden{overflow:hidden}.p-6{padding:1.5rem}.py-4{padding-top:1rem;padding-bottom:1rem}.px-4{padding-left:1rem;padding-right:1rem}.px-6{padding-left:1.5rem;padding-right:1.5rem}.pt-8{padding-top:2rem}.fixed{position:fixed}.relative{position:relative}.top-0{top:0}.right-0{right:0}.shadow{box-shadow:0 1px 3px 0 rgba(0,0,0,.1),0 1px 2px 0 rgba(0,0,0,.06)}.text-center{text-align:center}.text-gray-200{--text-opacity:1;color:#edf2f7;color:rgba(237,242,247,var(--text-opacity))}.text-gray-300{--text-opacity:1;color:#e2e8f0;color:rgba(226,232,240,var(--text-opacity))}.text-gray-400{--text-opacity:1;color:#cbd5e0;color:rgba(203,213,224,var(--text-opacity))}.text-gray-500{--text-opacity:1;color:#a0aec0;color:rgba(160,174,192,var(--text-opacity))}.text-gray-600{--text-opacity:1;color:#718096;color:rgba(113,128,150,var(--text-opacity))}.text-gray-700{--text-opacity:1;color:#4a5568;color:rgba(74,85,104,var(--text-opacity))}.text-gray-900{--text-opacity:1;color:#1a202c;color:rgba(26,32,44,var(--text-opacity))}.uppercase{text-transform:uppercase}.underline{text-decoration:underline}.antialiased{-webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale}.tracking-wider{letter-spacing:.05em}.w-5{width:1.25rem}.w-8{width:2rem}.w-auto{width:auto}.grid-cols-1{grid-template-columns:repeat(1,minmax(0,1fr))}@-webkit-keyframes spin{0%{transform:rotate(0deg)}to{transform:rotate(1turn)}}@keyframes spin{0%{transform:rotate(0deg)}to{transform:rotate(1turn)}}@-webkit-keyframes ping{0%{transform:scale(1);opacity:1}75%,to{transform:scale(2);opacity:0}}@keyframes ping{0%{transform:scale(1);opacity:1}75%,to{transform:scale(2);opacity:0}}@-webkit-keyframes pulse{0%,to{opacity:1}50%{opacity:.5}}@keyframes pulse{0%,to{opacity:1}50%{opacity:.5}}@-webkit-keyframes bounce{0%,to{transform:translateY(-25%);-webkit-animation-timing-function:cubic-bezier(.8,0,1,1);animation-timing-function:cubic-bezier(.8,0,1,1)}50%{transform:translateY(0);-webkit-animation-timing-function:cubic-bezier(0,0,.2,1);animation-timing-function:cubic-bezier(0,0,.2,1)}}@keyframes bounce{0%,to{transform:translateY(-25%);-webkit-animation-timing-function:cubic-bezier(.8,0,1,1);animation-timing-function:cubic-bezier(.8,0,1,1)}50%{transform:translateY(0);-webkit-animation-timing-function:cubic-bezier(0,0,.2,1);animation-timing-function:cubic-bezier(0,0,.2,1)}}@media (min-width:640px){.sm\:rounded-lg{border-radius:.5rem}.sm\:block{display:block}.sm\:items-center{align-items:center}.sm\:justify-start{justify-content:flex-start}.sm\:justify-between{justify-content:space-between}.sm\:h-20{height:5rem}.sm\:ml-0{margin-left:0}.sm\:px-6{padding-left:1.5rem;padding-right:1.5rem}.sm\:pt-0{padding-top:0}.sm\:text-left{text-align:left}.sm\:text-right{text-align:right}}@media (min-width:768px){.md\:border-t-0{border-top-width:0}.md\:border-l{border-left-width:1px}.md\:grid-cols-2{grid-template-columns:repeat(2,minmax(0,1fr))}}@media (min-width:1024px){.lg\:px-8{padding-left:2rem;padding-right:2rem}}@media (prefers-color-scheme:dark){.dark\:bg-gray-800{--bg-opacity:1;background-color:#2d3748;background-color:rgba(45,55,72,var(--bg-opacity))}.dark\:bg-gray-900{--bg-opacity:1;background-color:#1a202c;background-color:rgba(26,32,44,var(--bg-opacity))}.dark\:border-gray-700{--border-opacity:1;border-color:#4a5568;border-color:rgba(74,85,104,var(--border-opacity))}.dark\:text-white{--text-opacity:1;color:#fff;color:rgba(255,255,255,var(--text-opacity))}.dark\:text-gray-300 { --text-opacity: 1; color: #e2e8f0; color: rgba(226,232,240,var(--text-opacity)) }}
+        </style>
+
+        <style>
+            body {
+                font-family: ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans", sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
+            }
+        </style>
+    </head>
+    <body class="antialiased bg-white text-black">
+        <div class="relative flex items-top justify-center min-h-screen bg-white text-black sm:items-center sm:pt-0" role="main">
+            <div class="max-w-xl mx-auto sm:px-6 lg:px-8">
+                <div class="flex items-center pt-8 sm:justify-start sm:pt-0">
+                    <h1 class="px-4 text-lg text-black border-r border-gray-400">
+                        404                    </h1>
+
+                    <div class="ml-4 text-lg text-black">
+                        Not Found                    </div>
+                </div>
+            </div>
+        </div>
+    </body>
+</html>
+HTTP/1.1 404 Not Found
+Host: 127.0.0.1:8000
+Connection: close
+X-Powered-By: PHP/8.5.13
+Cache-Control: no-cache, private
+Date: Sat, 28 Nov 2026 15:38:41 GMT
+Content-Type: text/html; charset=utf-8
+Set-Cookie: XSRF-TOKEN=eyJpdiI6ImNvVUJja2pld3VaM1BwVy9JcXEyY2c9PSIsInZhbHVlIjoiTUhERkprZE1odFdZQjdidHZnK05ib2c1WEp2TUI2azlYTlh3M2Qzb0JMZHFjWXlXSWVMeXhTOFduVHIwOTJFRVpXVm5Xa2JFZjAwZE1kZkgrMk1xVDYwcVQyY0VYdVJsMHltelpJMTlGUFI1TEw0OGt4dzVya25BMVIxN04rWloiLCJtYWMiOiI5MDI0NWVkYTg1ZThkM2JlMTc4Njg3YzY4OGM2NWE4OWFmYzg3YjU4ZWVlNWU1OTJmN2M1MDYyYjczYzc0NzM2IiwidGFnIjoiIn0%3D; expires=Sat, 28 Nov 2026 17:38:41 GMT; Max-Age=7200; path=/; samesite=lax
+Set-Cookie: laravel-session=eyJpdiI6InAvOWhSdkJVUHpvSDRIQXJpd0VRWHc9PSIsInZhbHVlIjoiVC9FWXFhYUZHM3UwM1dHMENBM0VrOUIrbnRRZnFxaGpvRzNFNmJtMlUxdEFTd25wbmpiMENPbm9qMTNYNFdob2dFUjRZU2xEQjkxcEJYUTRkUTZxbjBCaHNLTlh1VytmcEJQcnI2K0JCb1h5b05JYUNkSmtkbjBpOG92aFZITW0iLCJtYWMiOiI0NDMzZjc4NzRmZjJlZTIxYzBjZmM4NjAyYmE0MTg3ZjAxOGUzNDlkMDg3M2M2YWJmOTBhODJlZmE0N2JjZDA0IiwidGFnIjoiIn0%3D; expires=Sat, 28 Nov 2026 17:38:41 GMT; Max-Age=7200; path=/; httponly; samesite=lax
+
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <title>Página não encontrada | Feira Digital</title>
+</head>
+<body>
+    <nav>
+    <a href="http://127.0.0.1:8000">Início</a> |
+    <a href="http://127.0.0.1:8000/produtos">Produtos</a> |
+    <a href="http://127.0.0.1:8000/cardapio">Cardápio</a> |
+    <a href="http://127.0.0.1:8000/sobre">Sobre</a> |
+    <a href="http://127.0.0.1:8000/contato">Contato</a> |
+    <a href="http://127.0.0.1:8000/inscricao">Inscrição</a>
+</nav>
+<hr>
+    <main>
+            <h1>Essa página não existe na Feira</h1>
+    <p>Use o menu acima para voltar.</p>
+    </main>
+
+    <footer>IFCE Campus Boa Viagem</footer>
+</body>
+</html
 ```
 
-a) _(responda aqui)_
+a) Em /produtos/99 — quem respondeu foi o ProdutoController (com a página 404 padrão do Laravel): a URL casa com a rota Route::get('/produtos/{id}', [ProdutoController::class, 'show'])->whereNumber('id'), pois 99 é um número válido. O método show(99) executa, verifica que não existe nenhum item com índice 99 no array $itens e dispara manualmente a função abort(404). Como essa exceção HTTP não passa pelo Route::fallback, o próprio tratador de exceções do Laravel renderiza a view interna padrão de erro 404 do framework.
+Em /qualquer-coisa — quem respondeu foi o Route::fallback (com a sua view personalizada nao-encontrada.blade.php): nenhuma rota declarada no routes/web.php corresponde ao caminho /qualquer-coisa. Assim, o roteador aciona a rota de escape Route::fallback, que executa response()->view('nao-encontrada', [], 404) e exibe a mensagem personalizada "Essa página não existe na Feira" dentro do layout da aplicação.
 b) Saídas coladas acima.
 
 ## R07: JSON pelo controller
