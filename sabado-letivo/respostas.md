@@ -7,12 +7,23 @@ Tema: _(número e nome)_
 
 ### Saída do tinker
 ```
-(cole aqui a saída do terminal)
+> $p = new App\Domain\Feira\ProdutoPorPeso('Feijão', 12.0, "grão", 12);
+
+= App\Domain\Feira\ProdutoPorPeso {#7509}
+
+> $p->calcularPreco(2.5);
+
+= 30.0
+
+> $p = new App\Domain\Feira\ProdutoPorPeso('Feijão', 0, "grão", 12);
+
+InvalidArgumentException  O preço deve ser maior que zero.
 ```
 
 a) Saída colada acima.
 b) Tabela de classes preenchida no README.md: _(sim/não)_
-c) _(responda aqui)_
+c) Pelo padrão PSR-4 de autoload gerenciado pelo Composer no Laravel, o PHP dispensa o uso manual de `require` ou `include` porque traduz o endereço lógico da classe diretamente para o caminho físico nas pastas do projeto, mapeando `App\` para `app/`. Dessa forma, o namespace define a estrutura de diretórios (`App\Domain\Feira` corresponde a `app/Domain/Feira/`) e o nome da classe define o nome exato do arquivo (`ProdutoPorPeso` corresponde a `ProdutoPorPeso.php`), de modo que qualquer divergência na escrita, inclusive entre letras maiúsculas e minúsculas, impede o "autoloader" de localizar o código e resulta no erro `Class "..." not found`.
+
 
 ## R03: Rotas rápidas
 
