@@ -1,7 +1,7 @@
 # Respostas: sábado letivo (28/11/2026)
 
-Nome: _(seu nome)_
-Tema: _(número e nome)_
+Nome: Dan Mendes
+Tema: 01 Feira Digital do Sertão
 
 ## R02: Classes do domínio
 
@@ -266,26 +266,51 @@ e) No teste (4), acontecem 2 requisições HTTP, seguindo o padrão PRG (Post/Re
 
 ### route:list
 ```
-(cole aqui a saída de php artisan route:list --except-vendor)
+GET|HEAD   / ................................................................................................................................................................................................ inicio › routes/web.php:10
+  GET|HEAD   cardapio ................................................................................................................................................................................ cardapio › CardapioController@index
+  GET|HEAD   contato ......................................................................................................................................................................................... contato › routes/web.php:35
+  GET|HEAD   feira ............................................................................................................................................................................................. feira › routes/web.php:17
+  ANY        inicio .............................................................................................................................................................................. Illuminate\Routing › RedirectController
+  GET|HEAD   inscricao ..................................................................................................................................................................... inscricao.create › InscricaoController@create
+  POST       inscricao ....................................................................................................................................................................... inscricao.store › InscricaoController@store
+  ANY        loja ................................................................................................................................................................................ Illuminate\Routing › RedirectController
+  GET|HEAD   manutencao ................................................................................................................................................................................................ routes/web.php:75
+  GET|HEAD   produtos ........................................................................................................................................................................... produtos.index › ProdutoController@index
+  POST       produtos ........................................................................................................................................................................... produtos.store › ProdutoController@store
+  ANY        produtos-antigos .................................................................................................................................................................... Illuminate\Routing › RedirectController
+  GET|HEAD   produtos/categoria/{categoria} ............................................................................................................................................. produtos.categoria › ProdutoController@categoria
+  GET|HEAD   produtos/criar ................................................................................................................................................................... produtos.create › ProdutoController@create
+  GET|HEAD   produtos/json ........................................................................................................................................................................ produtos.json › ProdutoController@json
+  GET|HEAD   produtos/{id} ........................................................................................................................................................................ produtos.show › ProdutoController@show
+  GET|HEAD   produtos/{id}/json .......................................................................................................................................................... produtos.show-json › ProdutoController@showJson
+  GET|HEAD   simular/{quantidade} ...................................................................................................................................................................................... routes/web.php:67
+  GET|HEAD   sobre ........................................................................................................................................................................................ sobre › PaginaController@sobre
+  GET|HEAD   status .................................................................................................................................................................................................... routes/web.php:74
+  GET|HEAD   {fallbackPlaceholder} ..................................................................................................................................................................................... routes/web.php:63
 ```
-
 ### Caminho de três requisições
-1. Closure: _(ex.: GET /simular/2 -> rota (web.php) -> closure -> objeto ProdutoPorPeso -> texto 200)_
-2. Controller e view: _(responda aqui)_
-3. JSON: _(responda aqui)_
+
+1. **Closure:** `GET /simular/2 -> rota (routes/web.php) -> closure -> objeto ProdutoPorPeso -> texto 200`
+2. **Controller e view:** `GET /produtos -> rota (routes/web.php) -> ProdutoController@index -> objetos ProdutoPorPeso e ProdutoUnitario (via itens()) -> view produtos.index (layouts.app + partials.menu) -> HTML 200`
+3. **JSON:** `GET /produtos/json -> rota (routes/web.php) -> ProdutoController@json -> objetos ProdutoPorPeso e ProdutoUnitario -> paraArray() -> response()->json() -> JSON 200`
 
 ### Perguntas de revisão
-1. Qual a diferença entre uma requisição GET e uma POST? Dê um exemplo de cada no seu sistema.
-   _(responda aqui)_
-2. O que o `declare(strict_types=1);` muda? O que aconteceria ao passar `'12'` (texto) para um parâmetro `float` com ele ligado?
-   _(responda aqui)_
-3. Por que os atributos das suas classes são `private`? Como a view consegue mostrar o nome do item?
-   _(responda aqui)_
-4. Qual a diferença entre `{{ $x }}` e `{!! $x !!}` no Blade? Qual é mais seguro e por quê?
-   _(responda aqui)_
-5. No seu projeto, onde está o Model, a View e o Controller? (Lembre: ainda não usamos banco de dados.)
-   _(responda aqui)_
-6. O que acontece se uma rota nova for escrita abaixo do `Route::fallback`?
-   _(responda aqui)_
-7. O que significam os códigos 200, 302, 404, 419 e 503? Em que parte do seu sistema cada um aparece?
-   _(responda aqui)_
+
+1. **Qual a diferença entre uma requisição GET e uma POST? Dê um exemplo de cada no seu sistema.**
+A requisição **GET** serve para consultar e recuperar dados do servidor sem alterar o estado da aplicação, enviando eventuais parâmetros na própria URL; no sistema, um exemplo é `GET /produtos`, que apenas lista os produtos cadastrados. Já a requisição **POST** serve para enviar dados no corpo da requisição com o objetivo de criar ou alterar recursos no servidor, exigindo proteção contra CSRF no Laravel; no sistema, um exemplo é `POST /produtos`, disparado ao submeter o formulário de cadastro para validar e gravar um novo produto na sessão.
+2. **O que o `declare(strict_types=1);` muda? O que aconteceria ao passar `'12'` (texto) para um parâmetro `float` com ele ligado?**
+O `declare(strict_types=1);` desativa a coerção automática de tipos do PHP nas chamadas de funções e métodos feitas dentro daquele arquivo, exigindo que os argumentos passados tenham exatamente o tipo declarado na assinatura. Com ele ativado, passar a string `'12'` para um parâmetro tipado como `float` (como em `calcularPreco('12')` ou no construtor de `Produto`) dispara imediatamente um erro fatal `TypeError` em tempo de execução, em vez de converter o texto silenciosamente para `12.0`.
+3. **Por que os atributos das suas classes são `private`? Como a view consegue mostrar o nome do item?**
+Os atributos são `private` para aplicar o princípio de **encapsulamento**, impedindo que códigos externos alterem diretamente o estado interno do objeto (como atribuir um preço negativo ou estoque inválido) sem passar pelas regras de validação do construtor e dos métodos da classe. A view consegue exibir o nome do item porque acessa a interface pública controlada pela classe por meio do método *getter* `$produto->getNome()` (ou, nas views que recebem o array serializado, através da chave `'nome'` gerada por `$produto->paraArray()`).
+4. **Qual a diferença entre `{{ $x }}` e `{!! $x !!}` no Blade? Qual é mais seguro e por quê?**
+A sintaxe `{{ $x }}` escapa automaticamente caracteres especiais de HTML (convertendo `<`, `>`, `&` e aspas em entidades HTML por meio da função `e()` / `htmlspecialchars()`), enquanto `{!! $x !!}` imprime o conteúdo bruto diretamente no documento sem nenhum tratamento. O `{{ $x }}` é mais seguro porque previne ataques de **XSS (*Cross-Site Scripting*)**, impedindo que tags `<script>` ou códigos maliciosos digitados por um usuário (por exemplo, no nome de um produto) sejam executados pelo navegador.
+5. **No seu projeto, onde está o Model, a View e o Controller? (Lembre: ainda não usamos banco de dados.)**
+Mesmo sem banco de dados, as três camadas do MVC estão bem definidas: o **Model** fica em `app/Domain/Feira/` (`Produto.php`, `ProdutoPorPeso.php` e `ProdutoUnitario.php`), concentrando as regras de negócio, validações e cálculos da feira; a **View** fica em `resources/views/` (incluindo `inicio.blade.php`, `produtos/index.blade.php`, `produtos/show.blade.php`, `produtos/create.blade.php`, `layouts/app.blade.php` e `partials/menu.blade.php`), responsável pela apresentação em HTML; e o **Controller** fica em `app/Http/Controllers/ProdutoController.php`, fazendo a ponte entre as rotas, o domínio, a sessão e as views.
+6. **O que acontece se uma rota nova for escrita abaixo do `Route::fallback`?**
+Ela nunca será alcançada. O Laravel avalia o arquivo `routes/web.php` de cima para baixo e o `Route::fallback` funciona como um curinga que casa com qualquer URL que ainda não tenha sido atendida; portanto, qualquer rota declarada abaixo dele será interceptada antes e receberá a resposta 404 da página `nao-encontrada`.
+7. **O que significam os códigos 200, 302, 404, 419 e 503? Em que parte do seu sistema cada um aparece?**
+* **200 (OK):** indica que a requisição foi processada com sucesso e o conteúdo foi devolvido; aparece ao carregar páginas como `GET /`, `GET /produtos` e `GET /produtos/json`.
+* **302 (Found):** indica redirecionamento temporário para outra URL; aparece após o envio válido de `POST /produtos` no `store()`, que redireciona o navegador para `route('produtos.index')`, e também em rotas de redirecionamento como `Route::redirect('/inicio', '/ola/visitante')`.
+* **404 (Not Found):** indica que o recurso ou endereço solicitado não existe; aparece quando o `ProdutoController` executa `abort(404)` para um ID inexistente (como `/produtos/99`) ou quando o `Route::fallback` captura uma URL desconhecida (como `/qualquer-coisa`).
+* **419 (Page Expired):** código específico do Laravel que indica falha ou ausência do token de segurança CSRF (ou sessão expirada); aparece ao enviar uma requisição `POST /produtos` sem o campo `@csrf` válido (como num `curl -X POST` direto).
+* **503 (Service Unavailable):** indica que o serviço está temporariamente indisponível ou em manutenção; aparece na rota de teste `/manutencao` (`response('Voltamos logo!', 503)`) ou quando a aplicação é colocada em modo de manutenção via `php artisan down`.

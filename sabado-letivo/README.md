@@ -28,6 +28,18 @@ Pasta: `app/Domain/Feira`
 ## Rotas (R10)
 
 | Verbo | Endereço | Nome | Quem atende |
-|---|---|---|---|
+| --- | --- | --- | --- |
 | GET | / | inicio | closure + view inicio |
-| | | | |
+| GET | /simular/{quantidade} | — | closure + domínio `ProdutoPorPeso` |
+| GET | /produtos | produtos.index | `ProdutoController@index` |
+| GET | /produtos/criar | produtos.create | `ProdutoController@create` |
+| POST | /produtos | produtos.store | `ProdutoController@store` |
+| GET | /produtos/json | produtos.json | `ProdutoController@json` |
+| GET | /produtos/{id} | produtos.show | `ProdutoController@show` |
+| GET | /produtos/{id}/json | produtos.showJson | `ProdutoController@showJson` |
+| GET | /categorias/{categoria} | produtos.categoria | `ProdutoController@categoria` |
+| GET | /cardapio | cardapio | closure / controller + view cardapio |
+| GET | /sobre | sobre | closure / controller + view sobre |
+| GET | /contato | contato | closure / controller + view contato |
+| GET | /inscricao | inscricao.create | closure / controller + view inscricao |
+| ANY | /{fallbackPlaceholder} | — | `Route::fallback` + view `nao-encontrada` (404) |
