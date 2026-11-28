@@ -186,11 +186,21 @@ b) Saídas coladas acima.
 
 ### Saídas
 ```
-(cole aqui o curl.exe -i de /produtos/json)
+HTTP/1.1 200 OK
+Host: 127.0.0.1:8000
+Connection: close
+X-Powered-By: PHP/8.5.13
+Cache-Control: no-cache, private
+Date: Sat, 28 Nov 2026 15:42:23 GMT
+Content-Type: application/json
+Set-Cookie: XSRF-TOKEN=eyJpdiI6IjJxMVZMTEJKSFVYTk5sV1owc1Jva0E9PSIsInZhbHVlIjoiWUZjSm1JUDhreVFPMlNXVFZ5cUl6MlU3U2NQSXVIK2Y0RWk4MWl0OWExMENQRmpYQWJXUXViUHd3VUVMZTFQTFpNNmdGa0Fpclk3K1ZUUzdqT0hja1YxYzlXR2ZwS1BGeCtvVk1KdVU1c3JaL2xCOStjWjMvS0tmRG5YSTI4QU4iLCJtYWMiOiI4Nzk4YTE2MDczZjhiNjk1MmE2ZGFmYTMzYWZhMzU3NDBkNmZlOGNiNTk5YzY0NTRiN2FmM2VmNGY3ZTYyZGI3IiwidGFnIjoiIn0%3D; expires=Sat, 28 Nov 2026 17:42:23 GMT; Max-Age=7200; path=/; samesite=lax
+Set-Cookie: laravel-session=eyJpdiI6IldsVjhQeGVrcVZKdTZROVdMREVWS3c9PSIsInZhbHVlIjoiQlRXb2pxdS9qRjNSOUJ2dUo1YXA2N0x2TEpPQUd1K3JneUVVSk9oTnBtVW12RCt0eHowdWE0WXJaWGNSUFlvYkRCME1IWld3WlladkFOOEhwTndseXVqOE9wdENNZGdubXpTSUhNMG5rK2t3TEFDdW1naitEbUdLemp0emNsN08iLCJtYWMiOiI0ZDkwYmIyODQxMzJlZGIwZTE5ZTlmMGI5MTgwZjI3NWY5MjFkOWNlYmM2MGIxYWRmNTA3YTFkNGExZWY0Mjc5IiwidGFnIjoiIn0%3D; expires=Sat, 28 Nov 2026 17:42:23 GMT; Max-Age=7200; path=/; httponly; samesite=lax
+
+{"1":{"nome":"Queijo coalho","tipo":"por kg","preco":25.5,"categoria":"laticinios","estoque":12},"2":{"nome":"Mel de abelha","tipo":"por unidade","preco":30,"categoria":"mel","estoque":0},"3":{"nome":"Rapadura","tipo":"por unidade","preco":4,"categoria":"doces","estoque":25},"4":{"nome":"Doce de leite","tipo":"por unidade","preco":15,"categoria":"doces","estoque":8},"5":{"nome":"Nata fresca","tipo":"por kg","preco":10,"categoria":"laticinios","estoque":5}}⏎           
 ```
 
 a) Saída colada acima.
-b) _(responda aqui)_
+b) Ao retornar `response()->json($this->itens())` sem o `paraArray()`, cada produto aparece no JSON como um objeto vazio (`{}`), resultando em `{"1":{},"2":{},"3":{},"4":{},"5":{}}`. Isso ocorre porque, para serializar os dados, o `response()->json()` do Laravel utiliza internamente a função `json_encode()` do PHP, que por padrão lê apenas os atributos públicos (`public`) visíveis fora de um objeto comum que não implementa a interface `JsonSerializable`. Como todos os atributos de `Produto` (`$nome`, `$preco`, `$categoria` e `$estoque`) são `private`, o serializador não tem permissão para acessá-los, ignora todos os campos e gera `{}` para cada instância de `ProdutoPorPeso` e `ProdutoUnitario`, problema que o método `paraArray()` resolve justamente por executar dentro da própria classe `Produto`, onde os atributos privados são acessíveis, devolvendo um array associativo comum que o `json_encode()` consegue converter normalmente.
 
 ## R08: Formulário de cadastro
 
