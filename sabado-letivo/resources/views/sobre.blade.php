@@ -1,19 +1,23 @@
 @extends('layouts.app')
 
-@section('titulo', $produto['nome'])
+@section('titulo', 'Sobre')
 
 @section('conteudo')
-    <h1>{{ $produto['nome'] }}</h1>
-    <p>Código: {{ $id }}</p>
-    <p>Categoria: {{ $produto['categoria'] }}</p>
-    <p>Preço: R$ {{ number_format($produto['preco'], 2, ',', '.') }}</p>
+    <h1>Sobre a Feira Digital</h1>
     <p>
-        Estoque:
-        @if ($produto['estoque'] === 0)
-            Esgotado
-        @else
-            {{ $produto['estoque'] }} unidades
-        @endif
+        A <strong>Feira Digital</strong> é uma iniciativa criada para aproximar produtores locais
+        dos consumidores, fortalecendo a agricultura familiar e valorizando os produtos regionais.
     </p>
-    <a href="{{ route('produtos.index') }}">Voltar</a>
+
+    <h2>O que você encontra por aqui</h2>
+    <ul>
+        <li><strong>Direto do produtor:</strong> alimentos frescos e artesanais, como queijo coalho, mel de abelha e rapadura, sem intermediários.</li>
+        <li><strong>Cardápio da feira:</strong> pratos típicos disponíveis no dia, preparados com ingredientes da região.</li>
+        <li><strong>Cadastro de produtores:</strong> expositores interessados em participar podem enviar seus dados pela página de <a href="{{ route('inscricao.create') }}">Inscrição</a>.</li>
+    </ul>
+
+    <h2>Realização</h2>
+    <p>
+        Sistema desenvolvido no âmbito acadêmico do <strong>IFCE — Campus Boa Viagem</strong>.
+    </p>
 @endsection

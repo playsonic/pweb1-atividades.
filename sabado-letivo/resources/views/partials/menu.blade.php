@@ -1,5 +1,5 @@
 <nav>
-    <a href="{{ route('boas-vindas') }}">Início</a> |
+    <a href="{{ route('inicio') }}">Início</a> |
     <a href="{{ route('produtos.index') }}">Produtos</a> |
     <a href="{{ route('cardapio') }}">Cardápio</a> |
     <a href="{{ route('sobre') }}">Sobre</a> |

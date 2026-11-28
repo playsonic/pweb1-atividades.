@@ -3,18 +3,23 @@
 @section('titulo', 'Produtos')
 
 @section('conteudo')
-    <h1>Produtos</h1>
+    <h1>Produtos da feira</h1>
+
     <ul>
-        @foreach ($produtos as $id => $produto)
+        @forelse ($produtos as $id => $produto)
             <li>
-                <a href="{{ route('produtos.show', $id) }}">{{ $produto['nome'] }}</a>:
-                R$ {{ number_format($produto['preco'], 2, ',', '.') }}
-                @if ($produto['estoque'] === 0)
+                <a href="{{ route('produtos.show', $id) }}">{{ $produto->getNome() }}</a>
+                ({{ $produto->tipo() }}):
+                R$ {{ number_format($produto->getPreco(), 2, ',', '.') }}
+                — 2 custam R$ {{ number_format($produto->calcularPreco(2), 2, ',', '.') }}
+                @if ($produto->getEstoque() === 0)
                     — <strong>Esgotado</strong>
                 @else
-                    — Estoque: {{ $produto['estoque'] }} un.
+                    — Estoque: {{ $produto->getEstoque() }} un.
                 @endif
             </li>
-        @endforeach
+        @empty
+            <li>Nenhum produto cadastrado.</li>
+        @endforelse
     </ul>
 @endsection
