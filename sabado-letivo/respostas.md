@@ -205,22 +205,62 @@ b) Ao retornar `response()->json($this->itens())` sem o `paraArray()`, cada prod
 ## R08: Formulário de cadastro
 
 a) Testes:
-1. Enviar vazio: _(o que apareceu)_
-2. Preço `abc`: _(o que apareceu)_
-3. Preço `0`: _(o que apareceu)_
-4. Cadastro certo: _(o que apareceu)_
+1. Enviar vazio: A página permanece em /produtos/criar com todos os campos em branco e exibe as mensagens de validação do Laravel logo abaixo dos campos obrigatórios (Nome e Preço): "The nome field is required." e "The preco field is required." (ou o equivalente em português, caso o idioma da aplicação esteja configurado para pt_BR).
+2. Preço `abc`: A página retorna ao formulário mantendo os valores digitados nos campos (old()) e exibe abaixo do campo Preço a mensagem do validador numérico do Laravel: "The preco field must be a number."
+3. Preço `0`: A página retorna ao formulário mantendo os dados preenchidos e exibe abaixo do campo Preço a mensagem de regra de negócio lançada pelo construtor da classe Produto (por exemplo: "O preço deve ser maior que zero.").
+4. Cadastro certo: O navegador é redirecionado para /produtos, exibe a mensagem de sucesso no topo da página ("Batata doce cadastrado!") e mostra o novo item no final da lista junto aos produtos fixos.
 
-b) _(responda aqui)_
+b) No teste (3), quem recusou o cadastro foi a classe de domínio (`Produto`, por meio de `ProdutoPorPeso` ou `ProdutoUnitario`), e não o `$request->validate()`, pois no controller a regra definida para o preço no `validate()` foi apenas `'required|numeric'` (sem exigir `gt:0`), fazendo com que o valor `0` passasse pela validação inicial da requisição HTTP por ser um número válido. Ao chamar `$this->criar($dados)`, o construtor de `Produto` verificou que o preço era menor ou igual a zero e lançou uma `InvalidArgumentException`, que foi capturada pelo bloco `catch (InvalidArgumentException $e)` no `ProdutoController` e tratada com `return back()->withErrors(['preco' => $e->getMessage()])->withInput()`, gravando o texto da exceção na sessão temporária de erros sob a chave `'preco'` para que, ao recarregar o formulário, a diretiva Blade `@error('preco') <small>{{ $message }}</small> @enderror` lesse essa chave e exibisse a mensagem na tela.
 
 c)
 ```
-(cole aqui a primeira linha do curl.exe -i -X POST)
+HTTP/1.1 419 unknown status
+Host: 127.0.0.1:8000
+Connection: close
+X-Powered-By: PHP/8.5.13
+Cache-Control: no-cache, private
+date: Sat, 28 Nov 2026 15:56:38 GMT
+Content-Type: text/html; charset=utf-8
+Set-Cookie: laravel-session=eyJpdiI6IkRzSHJBR0FJSWVsTzhKMFlva3llR2c9PSIsInZhbHVlIjoiQ3ExMXJwdVdnaUhWc2JvejY4TEVNcmhyUUNPdExWUXBEVSt5Z1ovczJGWnpyS3NYNFhLeTZFTFMrbzFLQWRBWml2eEtlVEV2cTk4RzVReldLTldDeVBOTGxZZ0M3Yys0UFlUQmlvZEdJd3hTOGJCdllCKzh1SHhKQy9tOFJCeHAiLCJtYWMiOiJlZWM0ZDA4M2Q2NDQ5NDM0NDQ0OWQzMTYzNzIwY2NiOTY1MWVlZmFlNzgzMWFlNWVjOGU2ZTMwMzg1MzA5M2JmIiwidGFnIjoiIn0%3D; expires=Sat, 28 Nov 2026 17:56:38 GMT; Max-Age=7200; path=/; httponly; samesite=lax
+
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+
+        <title>Page Expired</title>
+
+        <style>
+            /*! normalize.css v8.0.1 | MIT License | github.com/necolas/normalize.css */html{line-height:1.15;-webkit-text-size-adjust:100%}body{margin:0}a{background-color:transparent}code{font-family:monospace,monospace;font-size:1em}[hidden]{display:none}html{font-family:system-ui,-apple-system,BlinkMacSystemFont,Segoe UI,Roboto,Helvetica Neue,Arial,Noto Sans,sans-serif,Apple Color Emoji,Segoe UI Emoji,Segoe UI Symbol,Noto Color Emoji;line-height:1.5}*,:after,:before{box-sizing:border-box;border:0 solid #e2e8f0}a{color:inherit;text-decoration:inherit}code{font-family:Menlo,Monaco,Consolas,Liberation Mono,Courier New,monospace}svg,video{display:block;vertical-align:middle}video{max-width:100%;height:auto}.bg-white{--bg-opacity:1;background-color:#fff;background-color:rgba(255,255,255,var(--bg-opacity))}.bg-gray-100{--bg-opacity:1;background-color:#f7fafc;background-color:rgba(247,250,252,var(--bg-opacity))}.border-gray-200{--border-opacity:1;border-color:#edf2f7;border-color:rgba(237,242,247,var(--border-opacity))}.border-gray-400{--border-opacity:1;border-color:#cbd5e0;border-color:rgba(203,213,224,var(--border-opacity))}.border-t{border-top-width:1px}.border-r{border-right-width:1px}.flex{display:flex}.grid{display:grid}.hidden{display:none}.items-center{align-items:center}.justify-center{justify-content:center}.font-semibold{font-weight:600}.h-5{height:1.25rem}.h-8{height:2rem}.h-16{height:4rem}.text-sm{font-size:.875rem}.text-lg{font-size:1.125rem}.leading-7{line-height:1.75rem}.mx-auto{margin-left:auto;margin-right:auto}.ml-1{margin-left:.25rem}.mt-2{margin-top:.5rem}.mr-2{margin-right:.5rem}.ml-2{margin-left:.5rem}.mt-4{margin-top:1rem}.ml-4{margin-left:1rem}.mt-8{margin-top:2rem}.ml-12{margin-left:3rem}.-mt-px{margin-top:-1px}.max-w-xl{max-width:36rem}.max-w-6xl{max-width:72rem}.min-h-screen{min-height:100vh}.overflow-hidden{overflow:hidden}.p-6{padding:1.5rem}.py-4{padding-top:1rem;padding-bottom:1rem}.px-4{padding-left:1rem;padding-right:1rem}.px-6{padding-left:1.5rem;padding-right:1.5rem}.pt-8{padding-top:2rem}.fixed{position:fixed}.relative{position:relative}.top-0{top:0}.right-0{right:0}.shadow{box-shadow:0 1px 3px 0 rgba(0,0,0,.1),0 1px 2px 0 rgba(0,0,0,.06)}.text-center{text-align:center}.text-gray-200{--text-opacity:1;color:#edf2f7;color:rgba(237,242,247,var(--text-opacity))}.text-gray-300{--text-opacity:1;color:#e2e8f0;color:rgba(226,232,240,var(--text-opacity))}.text-gray-400{--text-opacity:1;color:#cbd5e0;color:rgba(203,213,224,var(--text-opacity))}.text-gray-500{--text-opacity:1;color:#a0aec0;color:rgba(160,174,192,var(--text-opacity))}.text-gray-600{--text-opacity:1;color:#718096;color:rgba(113,128,150,var(--text-opacity))}.text-gray-700{--text-opacity:1;color:#4a5568;color:rgba(74,85,104,var(--text-opacity))}.text-gray-900{--text-opacity:1;color:#1a202c;color:rgba(26,32,44,var(--text-opacity))}.uppercase{text-transform:uppercase}.underline{text-decoration:underline}.antialiased{-webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale}.tracking-wider{letter-spacing:.05em}.w-5{width:1.25rem}.w-8{width:2rem}.w-auto{width:auto}.grid-cols-1{grid-template-columns:repeat(1,minmax(0,1fr))}@-webkit-keyframes spin{0%{transform:rotate(0deg)}to{transform:rotate(1turn)}}@keyframes spin{0%{transform:rotate(0deg)}to{transform:rotate(1turn)}}@-webkit-keyframes ping{0%{transform:scale(1);opacity:1}75%,to{transform:scale(2);opacity:0}}@keyframes ping{0%{transform:scale(1);opacity:1}75%,to{transform:scale(2);opacity:0}}@-webkit-keyframes pulse{0%,to{opacity:1}50%{opacity:.5}}@keyframes pulse{0%,to{opacity:1}50%{opacity:.5}}@-webkit-keyframes bounce{0%,to{transform:translateY(-25%);-webkit-animation-timing-function:cubic-bezier(.8,0,1,1);animation-timing-function:cubic-bezier(.8,0,1,1)}50%{transform:translateY(0);-webkit-animation-timing-function:cubic-bezier(0,0,.2,1);animation-timing-function:cubic-bezier(0,0,.2,1)}}@keyframes bounce{0%,to{transform:translateY(-25%);-webkit-animation-timing-function:cubic-bezier(.8,0,1,1);animation-timing-function:cubic-bezier(.8,0,1,1)}50%{transform:translateY(0);-webkit-animation-timing-function:cubic-bezier(0,0,.2,1);animation-timing-function:cubic-bezier(0,0,.2,1)}}@media (min-width:640px){.sm\:rounded-lg{border-radius:.5rem}.sm\:block{display:block}.sm\:items-center{align-items:center}.sm\:justify-start{justify-content:flex-start}.sm\:justify-between{justify-content:space-between}.sm\:h-20{height:5rem}.sm\:ml-0{margin-left:0}.sm\:px-6{padding-left:1.5rem;padding-right:1.5rem}.sm\:pt-0{padding-top:0}.sm\:text-left{text-align:left}.sm\:text-right{text-align:right}}@media (min-width:768px){.md\:border-t-0{border-top-width:0}.md\:border-l{border-left-width:1px}.md\:grid-cols-2{grid-template-columns:repeat(2,minmax(0,1fr))}}@media (min-width:1024px){.lg\:px-8{padding-left:2rem;padding-right:2rem}}@media (prefers-color-scheme:dark){.dark\:bg-gray-800{--bg-opacity:1;background-color:#2d3748;background-color:rgba(45,55,72,var(--bg-opacity))}.dark\:bg-gray-900{--bg-opacity:1;background-color:#1a202c;background-color:rgba(26,32,44,var(--bg-opacity))}.dark\:border-gray-700{--border-opacity:1;border-color:#4a5568;border-color:rgba(74,85,104,var(--border-opacity))}.dark\:text-white{--text-opacity:1;color:#fff;color:rgba(255,255,255,var(--text-opacity))}.dark\:text-gray-300 { --text-opacity: 1; color: #e2e8f0; color: rgba(226,232,240,var(--text-opacity)) }}
+        </style>
+
+        <style>
+            body {
+                font-family: ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans", sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
+            }
+        </style>
+    </head>
+    <body class="antialiased bg-white text-black">
+        <div class="relative flex items-top justify-center min-h-screen bg-white text-black sm:items-center sm:pt-0" role="main">
+            <div class="max-w-xl mx-auto sm:px-6 lg:px-8">
+                <div class="flex items-center pt-8 sm:justify-start sm:pt-0">
+                    <h1 class="px-4 text-lg text-black border-r border-gray-400">
+                        419                    </h1>
+
+                    <div class="ml-4 text-lg text-black">
+                        Page Expired                    </div>
+                </div>
+            </div>
+        </div>
+    </body>
+</html>
 ```
-_(por que 419?)_
+por causa da proteção contra CSRF (Cross-Site Request Forgery) do Laravel. Toda rota POST registrada em routes/web.php passa pelo middleware de verificação de token CSRF, que exige um campo oculto _token válido e compatível com o cookie de sessão atual. Como o curl enviou o POST diretamente sem o token gerado pela diretiva @csrf do formulário e sem uma sessão iniciada, o Laravel rejeitou a requisição com o código 419.
 
-d) _(responda aqui)_
+d) A sessão armazena o array `$dados` em vez do objeto `$produto` por três motivos técnicos principais: primeiro, pela compatibilidade com o modo de serialização (`serialization`), já que o Laravel permite configurar `'serialization' => 'json'` em `config/session.php`, nesse formato, objetos com atributos `private` como `Produto` são serializados como `{}` vazios e perdem todos os seus dados, enquanto arrays associativos funcionam em qualquer driver; segundo, pela estabilidade e segurança na desserialização, pois gravar objetos serializados cria acoplamento direto com a estrutura interna da classe, podendo gerar erros (`__PHP_Incomplete_Class`) ou abrir brechas de segurança caso `Produto` seja renomeada, mude de namespace ou tenha seus atributos alterados; e terceiro, pela garantia das regras atuais do domínio, uma vez que, ao salvar apenas os dados brutos e reconstruir os objetos via `$this->criar($dados)` dentro de `itens()`, todo item carregado da sessão passa novamente pelo construtor e pelas validações vigentes da classe.
 
-e) _(responda aqui)_
+e) No teste (4), acontecem 2 requisições HTTP, seguindo o padrão PRG (Post/Redirect/Get). Na primeira requisição (POST /produtos), ao clicar em Cadastrar, o navegador envia os campos preenchidos junto com o token @csrf para /produtos; o Laravel valida o token CSRF, aciona ProdutoController@store, valida o formato dos dados com $request->validate() e chama $this->criar($dados), momento em que a classe de domínio (ProdutoPorPeso ou ProdutoUnitario) valida as regras de negócio e instancia o objeto. Em seguida, o controller grava o array $dados na sessão com session()->push('produtos', $dados), salva a mensagem temporária (flash) 'sucesso' na sessão e devolve ao navegador uma resposta de redirecionamento 302 Found apontando para a rota produtos.index (/produtos). Ao receber esse redirecionamento, o navegador dispara automaticamente a segunda requisição (GET /produtos), que aciona ProdutoController@index; esse método chama $this->itens() para unir os produtos fixos aos arrays salvos na sessão (reconvertidos em objetos de domínio pelo método criar()) e envia a lista completa para a view produtos.index, que renderiza o HTML final com a mensagem de sucesso no topo e o novo produto listado, retornando 200 OK ao navegador.
 
 ## R10: Testes finais e explicações
 
