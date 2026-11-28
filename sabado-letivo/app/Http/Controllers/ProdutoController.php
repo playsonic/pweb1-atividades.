@@ -1,46 +1,79 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Http\Controllers;
+
+use App\Domain\Feira\Produto;
+use App\Domain\Feira\ProdutoPorPeso;
+use App\Domain\Feira\ProdutoUnitario;
+use Illuminate\Http\Request;
+use InvalidArgumentException;
 
 class ProdutoController extends Controller
 {
-    private function produtos(): array
+    private function criar(array $dados): Produto
     {
-        return [
-            1 => ['nome' => 'Queijo coalho', 'preco' => 25.5, 'categoria' => 'laticinios', 'estoque' => 12],
-            2 => ['nome' => 'Mel de abelha', 'preco' => 30.0, 'categoria' => 'mel', 'estoque' => 0],
-            3 => ['nome' => 'Rapadura', 'preco' => 4.0, 'categoria' => 'doces', 'estoque' => 25],
-            4 => ['nome' => 'Doce de leite', 'preco' => 15.0, 'categoria' => 'doces', 'estoque' => 8],
-            5 => ['nome' => 'Nata fresca', 'preco' => 10.0, 'categoria' => 'laticinios', 'estoque' => 5],
+        $categoria = $dados['categoria'] ?? 'geral';
+        $estoque = (int) ($dados['estoque'] ?? 0);
+
+        return match ($dados['tipo']) {
+            'peso' => new ProdutoPorPeso($dados['nome'], (float) $dados['preco'], $categoria, $estoque),
+            'unidade' => new ProdutoUnitario($dados['nome'], (float) $dados['preco'], $categoria, $estoque),
+        };
+    }
+
+    private function itens(): array
+    {
+        $fixos = [
+            new ProdutoPorPeso('Queijo coalho', 25.5, 'laticinios', 12),
+            new ProdutoUnitario('Mel de abelha', 30.0, 'mel', 0),
+            new ProdutoUnitario('Rapadura', 4.0, 'doces', 25),
+            new ProdutoUnitario('Doce de leite', 15.0, 'doces', 8),
+            new ProdutoPorPeso('Nata fresca', 10.0, 'laticinios', 5),
         ];
+
+        $cadastrados = array_map(
+            fn (array $dados) => $this->criar($dados),
+            session('produtos', [])
+        );
+
+        $todos = array_merge($fixos, $cadastrados);
+
+        $indexados = [];
+        foreach ($todos as $indice => $produto) {
+            $indexados[$indice + 1] = $produto;
+        }
+
+        return $indexados;
     }
 
     public function index()
     {
         return view('produtos.index', [
-            'produtos' => $this->produtos(),
+            'produtos' => $this->itens(),
         ]);
     }
 
     public function show(int $id)
     {
-        $produtos = $this->produtos();
+        $itens = $this->itens();
 
-        if (! isset($produtos[$id])) {
+        if (! isset($itens[$id])) {
             abort(404);
         }
 
         return view('produtos.show', [
             'id' => $id,
-            'produto' => $produtos[$id],
+            'produto' => $itens[$id]->paraArray(),
         ]);
     }
 
     public function categoria(string $categoria)
     {
         $filtrados = array_filter(
-            $this->produtos(),
-            fn ($produto) => $produto['categoria'] === $categoria
+            $this->itens(),
+            fn (Produto $produto) => $produto->getCategoria() === $categoria
         );
 
         if (empty($filtrados)) {
@@ -54,14 +87,19 @@ class ProdutoController extends Controller
 
     public function json()
     {
-        return response()->json($this->produtos());
+    $dados = array_map(
+        fn (Produto $produto) => $produto->paraArray(),
+        $this->itens()
+    );
+
+    return response()->json($dados);
     }
 
     public function showJson(int $id)
     {
-        $produtos = $this->produtos();
+        $itens = $this->itens();
 
-        if (! isset($produtos[$id])) {
+        if (! isset($itens[$id])) {
             return response()->json([
                 'erro' => "Produto $id não encontrado",
             ], 404);
@@ -69,7 +107,34 @@ class ProdutoController extends Controller
 
         return response()->json([
             'id' => $id,
-            ...$produtos[$id],
+            ...$itens[$id]->paraArray(),
         ], 200);
+    }
+
+    public function create()
+    {
+        return view('produtos.create');
+    }
+
+    public function store(Request $request)
+    {
+        $dados = $request->validate([
+            'tipo' => 'required|in:peso,unidade',
+            'nome' => 'required|min:3',
+            'preco' => 'required|numeric',
+            'categoria' => 'nullable|string|min:2',
+            'estoque' => 'nullable|integer|min:0',
+        ]);
+
+        try {
+            $produto = $this->criar($dados); 
+        } catch (InvalidArgumentException $e) {
+            return back()->withErrors(['preco' => $e->getMessage()])->withInput();
+        }
+
+        session()->push('produtos', $dados); 
+        return redirect()
+            ->route('produtos.index')
+            ->with('sucesso', "{$produto->getNome()} cadastrado!");
     }
 }

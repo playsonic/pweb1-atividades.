@@ -93,8 +93,8 @@ b) Usar `route('inicio')` em vez de `href="/"` promove a manutenção centraliza
 
 ## R05: A lista pelo controller
 
-a) _(responda aqui)_
-b) _(responda aqui)_
+a) Isso acontece graças ao polimorfismo da orientação a objetos. O array $produtos percorrido pelo @forelse na view reúne instâncias de duas classes filhas distintas, ProdutoPorPeso e ProdutoUnitario, que herdam da mesma classe mãe abstrata (App\Domain\Feira\Produto) e implementam, cada uma à sua maneira, o contrato do método calcularPreco(float $quantidade). Por meio do polimorfismo, a view não precisa verificar qual é o tipo concreto de cada objeto com estruturas if/else: ela apenas invoca a mesma assinatura $produto->calcularPreco(2) e o PHP decide, em tempo de execução, qual implementação rodar de acordo com a classe real daquela instância, executando o cálculo por quilo (que aceita valores fracionados) quando o objeto é ProdutoPorPeso, ou validando se a quantidade é um número inteiro antes de multiplicar pelo preço unitário quando o objeto é ProdutoUnitario.
+b) Na requisição `GET /produtos`, o navegador envia o pedido ao ponto de entrada do Laravel (`public/index.php`), que consulta o arquivo `routes/web.php` e encontra a rota `Route::get('/produtos', [ProdutoController::class, 'index'])`, acionando o método `index()` do `ProdutoController`. É nesse momento que as classes de domínio (`App\Domain\Feira\Produto`, `ProdutoPorPeso` e `ProdutoUnitario`) entram no fluxo, pois o controller chama `$this->itens()` (e `criar()` para os itens da sessão) para instanciar esses objetos, aplicando as validações do construtor e encapsulando as regras de negócio de cada produto. Em seguida, o controller repassa a lista para `view('produtos.index')`, onde o motor Blade monta a página combinando `layouts/app.blade.php` e `partials/menu.blade.php` e interage novamente com os objetos de domínio, invocando métodos como `$produto->getNome()`, `$produto->tipo()`, `$produto->calcularPreco(2)` e `$produto->getEstoque()`, até enviar o HTML final renderizado de volta ao navegador com status `200 OK`.
 
 ## R06: Detalhe, abort(404) e fallback
 
