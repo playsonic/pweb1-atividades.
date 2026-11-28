@@ -29,12 +29,63 @@ c) Pelo padrão PSR-4 de autoload gerenciado pelo Composer no Laravel, o PHP dis
 
 ### Saídas
 ```
-(cole aqui o curl.exe -i de /status, /manutencao e /inicio)
+curl -i http://127.0.0.1:8000/status
+  curl -i http://127.0.0.1:8000/manutencao
+  curl -i http://127.0.0.1:8000/inicio
+HTTP/1.1 200 OK
+Host: 127.0.0.1:8000
+Connection: close
+X-Powered-By: PHP/8.5.13
+Cache-Control: no-cache, private
+Date: Sat, 28 Nov 2026 14:38:31 GMT
+Content-Type: application/json
+Set-Cookie: XSRF-TOKEN=eyJpdiI6Ik0raytFOEpna2xFQ0M1ckNPTVcrNFE9PSIsInZhbHVlIjoiTzNiY2VtYmxtWFY0U2N1ZTREM2NEZXNtbXZ1aWZlakRkT01aYy90M1FZQWZJZXA5akkvdnYzYXF2ajZZZ3R0dkorMm1UYWdkOFhMZ05neHdwWnVzaEZFYmpRMUtGTUdKY242dXZlRW5XUFZsSkVIT0x3Q3pMWGlHYldNSHd4MjQiLCJtYWMiOiI4N2MwNzBmOTI1MGE3NzkxZTBkZTNiYTg4Y2FmNjJkMjE0YTZiM2FjN2YwZmNhM2UzNWViZDZhZGJiNTU5ZWJhIiwidGFnIjoiIn0%3D; expires=Sat, 28 Nov 2026 16:38:31 GMT; Max-Age=7200; path=/; samesite=lax
+Set-Cookie: laravel-session=eyJpdiI6IjJKem9tS01DQWF0aUZ5NUZNbmJ1aUE9PSIsInZhbHVlIjoiMEl6Yk9XVCt1bUpnZmxwYWVaK1FIZ2c0NktMaFYrYVRWWmZJRFdGOEs4Zmd2dWRUZzIzT3I1aDQvSmhBTm1Sei9pUXV0S3NZcWxadVVLaGVaUjRvTjAxKzRaYlpxVTFTbGV2Rmd2OHRoOGR1RjZTQ2hiMmdWNk9wT21tclhNaDEiLCJtYWMiOiJlNjRkYzI5OWEzMjRjNGQzM2Q0ZDA4NDFhNjAzOWJkYTljYThlZTRkZDYyNTk3YWIxZjlkZmZhZjJmYmU4ZGQzIiwidGFnIjoiIn0%3D; expires=Sat, 28 Nov 2026 16:38:31 GMT; Max-Age=7200; path=/; httponly; samesite=lax
+
+{"status":"ok"}HTTP/1.1 503 Service Unavailable
+Host: 127.0.0.1:8000
+Connection: close
+X-Powered-By: PHP/8.5.13
+Cache-Control: no-cache, private
+Date: Sat, 28 Nov 2026 14:38:31 GMT
+Content-Type: text/html; charset=utf-8
+Set-Cookie: XSRF-TOKEN=eyJpdiI6IjVBRTEzUkdOd1FMU1dFTWV0U2daUXc9PSIsInZhbHVlIjoiT3NrdjVleHh6SncrMkQyNEppOHZQc0llWit1WXN6OU5HblB0aGhkam1kUE1qaENnRnYyUVJZMVkzYTJ0UHoyN3dxWnFRMXNnMFdZV0QxRkRUY3BtZERPN2MvcDQ0K24yZE1mb1dwdzRvOGlsVzIzZDFLVGF5UitrWkxlcjR0OU0iLCJtYWMiOiJkYzE3Y2FlODgzZmU1NmFiNjkyZWQxOTFjZWRkNzY1MDMxZWEwZjYxNzRmOWYzMTU1NDg3MTE0NTAyZTM0ZDRjIiwidGFnIjoiIn0%3D; expires=Sat, 28 Nov 2026 16:38:31 GMT; Max-Age=7200; path=/; samesite=lax
+Set-Cookie: laravel-session=eyJpdiI6IkRaYXBCRHdzeXRkbHNXNDlONnVIOHc9PSIsInZhbHVlIjoiNVRyYU14TjRDQkFRYzRxeFRlYVd5dk1hL054amtNM0hpazh2THF2SjhIUEtTYzJqbW5uNWVtRlRXYVJtb1VjZnRrbGh3ZHVZR3RYU3FCNktxa2FjQ1hsYnVvcDFIRXU2Y1NsVXhnWDNKdXhPSVlGRU9KYXlKWVNpdFVsUzdkd3MiLCJtYWMiOiI5NDIxNTUyYWI4MTY1NjcyYzM2ZTZhMDBkNDVhM2EzOTg4NTcyZTFkZWRmODAzNDM2YjQxZmYxZDdhOTEwNDM0IiwidGFnIjoiIn0%3D; expires=Sat, 28 Nov 2026 16:38:31 GMT; Max-Age=7200; path=/; httponly; samesite=lax
+
+Voltamos logo!HTTP/1.1 302 Found
+Host: 127.0.0.1:8000
+Connection: close
+X-Powered-By: PHP/8.5.13
+Cache-Control: no-cache, private
+Date: Sat, 28 Nov 2026 14:38:31 GMT
+Location: /ola/visitante
+Content-Type: text/html; charset=utf-8
+Set-Cookie: XSRF-TOKEN=eyJpdiI6IlBpWHZtMlB3Mm1iMC9GN2h2TzBETEE9PSIsInZhbHVlIjoiVVg4NWwxZnkzaXpvS0VJeW5ZTmMzdXFDbWJMcDlmS0VqaVUwQmV5T2U2UUlWY2dxcHpuYW90eWNIVGNhOW1vdnZBRHFCUk1PSzhqczYzMDd1YVBNYXRWTkttUXRQblBsWGlGclIraDhSRXo3NUdHMCtlZytQK0pWUVc2UHZoZmciLCJtYWMiOiJlN2MxMTViN2ZmNDNmMzVlODFjYTA2ZDE2MTJlNWQyODI3NGQwMWY4NDkxZTc1Y2I5YzRlMjk1ZGMwODZjMDA5IiwidGFnIjoiIn0%3D; expires=Sat, 28 Nov 2026 16:38:31 GMT; Max-Age=7200; path=/; samesite=lax
+Set-Cookie: laravel-session=eyJpdiI6IlB3aWZkMWRpdS9NWGxDOGU4V1IvVnc9PSIsInZhbHVlIjoiVjBMWS9MMlYzR0tQbnJXa2lNYVp2WWhZVEcwYjhDMktBd2UzRmZidkswdmlCVi9ZOFJtRGp5aUUyU25QOVpFRUZFY25kdWIwb2FYQnBHNXVzbnZzSDBsaHVvRW53dTVFT1JXbzJQRDl5ci9lb3F1N2lhMHRtb3ppazluWFVrNHMiLCJtYWMiOiJmMmI2ZThmZDA4NjNkOTM5ODQ0ZmU4NTc3YWExOTU0MTA1NGI2NjQ2YTA3MDIyZTEzMzVhMTkzYzFiN2JhNDljIiwidGFnIjoiIn0%3D; expires=Sat, 28 Nov 2026 16:38:31 GMT; Max-Age=7200; path=/; httponly; samesite=lax
+
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="UTF-8" />
+        <meta http-equiv="refresh" content="0;url='/ola/visitante'" />
+
+        <title>Redirecting to /ola/visitante</title>
+    </head>
+    <body>
+        Redirecting to <a href="/ola/visitante">/ola/visitante</a>.
+    </body>
+</html>
 ```
 
-a) Content-Type do /status: _(responda aqui)_ — Location do /inicio: _(responda aqui)_
-b) _(responda aqui)_
-c) _(responda aqui)_
+a) Content-Type do /status: 
+* /status (HTTP/1.1 200 OK): como a rota devolve um array PHP, o Laravel serializa a resposta para JSON automaticamente, gerando o cabeçalho destacado: Content-Type: application/json
+
+* /manutencao (HTTP/1.1 503 Service Unavailable): devolve o texto 'Voltamos logo!' com status 503 e Content-Type: text/html; charset=UTF-8.
+
+* /inicio (HTTP/1.1 302 Found): por ser um redirecionamento (Route::redirect), o servidor responde sem conteúdo principal e envia o cabeçalho destacado indicando o destino: Location: [http://127.0.0.1:8000/ola/visitante](http://127.0.0.1:8000/ola/visitante)
+b) Ao acessar `/simular/abc`, o servidor retorna o status HTTP **404 Not Found**, e a *closure* nem chega a rodar porque a rota define a restrição `->where('quantidade', '[0-9]+(\.[0-9]+)?')`. O roteador do Laravel valida o segmento `{quantidade}` contra essa expressão regular antes de invocar a função e, como `'abc'` não casa com o padrão numérico exigido, descarta a rota durante a etapa de casamento de URL, evitando inclusive um `TypeError` no parâmetro `float $quantidade`, e encaminha a requisição diretamente para o `Route::fallback`, que devolve o erro 404.
+c) Na rota `/simular`, apenas o **Model** (representado por `ProdutoPorPeso`) participou do padrão MVC, sendo acionado diretamente pela camada de roteamento (`routes/web.php`), sem a atuação de um **Controller** intermediando a requisição ou de uma **View** Blade, já que a própria *closure* devolve uma `string` pura no `return`. Nesse contexto, a classe de domínio (`App\Domain\Feira\ProdutoPorPeso`) pertence à camada **Model**, pois, no padrão MVC, o modelo não se restringe a classes Eloquent ou tabelas do banco de dados, englobando toda a lógica de negócio, regras de validação e entidades da aplicação, como o cálculo realizado pelo método `calcularPreco()`.
+
 
 ## R04: Layout, menu e página inicial
 

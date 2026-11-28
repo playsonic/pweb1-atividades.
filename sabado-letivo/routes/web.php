@@ -4,40 +4,15 @@ use App\Http\Controllers\CardapioController;
 use App\Http\Controllers\InscricaoController;
 use App\Http\Controllers\PaginaController;
 use App\Http\Controllers\ProdutoController;
+use App\Domain\Feira\ProdutoPorPeso;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
-    return view('welcome');
-});
-
-Route::get('/titulo', function () {
-    return '<h1>Feira Digital</h1><p>Direto do produtor.</p>';
-});
-
-Route::get('/produto-json', function () {
-    return [
-        'nome' => 'Queijo coalho',
-        'preco' => 25.50,
-        'disponivel' => true,
-    ];
-});
-
-Route::get('/ola/{nome}', function (string $nome) {
-    return "Olá, $nome!";
-});
-
-Route::get('/produto/{id}', function (int $id) {
-    return "Produto número $id";
-})->whereNumber('id');
-
-Route::get('/manutencao', function () {
-    return response('Voltamos logo!', 503);
-});
-
-Route::redirect('/inicio', '/ola/visitante');
-
-Route::view('/boas-vindas', 'boas-vindas', ['turma' => 'ADS 2026'])
-    ->name('boas-vindas');
+    return view('inicio', [
+        'sistema' => 'Feira Digital',
+        'tema' => 'Tema 01: venda de produtos da feira',
+    ]);
+})->name('inicio');
 
 Route::get('/feira', function () {
     $produtos = ['Queijo coalho', 'Mel de abelha', 'Rapadura'];
@@ -47,77 +22,6 @@ Route::get('/feira', function () {
         'produtos' => $produtos,
     ]);
 })->name('feira');
-
-Route::get('/meu-nome', function () {
-    return 'Meu nome é Dan Mendes e estudo ADS no IFCE.';
-});
-
-Route::get('/cartao', function () {
-    return '<h2>Dan Mendes</h2>'
-        . '<p>Semestre: 4º semestre</p>'
-        . '<ul>'
-        . '<li>Programação Back-end</li>'
-        . '<li>RPG de Mesa</li>'
-        . '<li>Linux e Self-Hosting</li>'
-        . '</ul>';
-});
-
-Route::get('/perfil-json', function () {
-    return [
-        'nome' => 'Dan Mendes',
-        'semestre' => 4,
-        'media' => 8.5,
-        'bolsista' => true,
-        'disciplinas' => ['Programação Web I', 'Banco de Dados', 'Engenharia de Software'],
-        'endereco' => [
-            'cidade' => 'Boa Viagem',
-            'uf' => 'CE',
-        ],
-    ];
-});
-
-Route::get('/perfil-criado', function () {
-    return response()->json([
-        'nome' => 'Dan Mendes',
-        'semestre' => 4,
-        'media' => 8.5,
-        'bolsista' => true,
-        'disciplinas' => ['Programação Web I', 'Banco de Dados', 'Engenharia de Software'],
-        'endereco' => [
-            'cidade' => 'Boa Viagem',
-            'uf' => 'CE',
-        ],
-    ], 201);
-});
-
-Route::get('/tabuada/{numero}', function (int $numero) {
-    $saida = '';
-    for ($i = 1; $i <= 10; $i++) {
-        $resultado = $numero * $i;
-        $saida .= "$numero x $i = $resultado<br>";
-    }
-
-    return $saida;
-})->whereNumber('numero');
-
-Route::get('/idade/{ano}', function (int $ano) {
-    $anoAtual = (int) date('Y');
-    $idade = $anoAtual - $ano;
-
-    return "Quem nasceu em $ano tem ou vai fazer $idade anos em $anoAtual.";
-})->whereNumber('ano');
-
-Route::get('/boas-vindas-turma/{turma?}', function (string $turma = 'ADS') {
-    return "Bem-vinda, turma de $turma!";
-});
-
-Route::get('/admin', function () {
-    return response('Área restrita', 403);
-});
-
-Route::get('/em-breve', function () {
-    return response('Página em construção', 503);
-});
 
 Route::redirect('/loja', '/feira');
 Route::permanentRedirect('/produtos-antigos', '/produtos');
@@ -159,3 +63,16 @@ Route::post('/inscricao', [InscricaoController::class, 'store'])
 Route::fallback(function () {
     return response()->view('nao-encontrada', [], 404);
 });
+
+Route::get('/simular/{quantidade}', function (float $quantidade) {
+    $feijao = new ProdutoPorPeso('Feijão', 12.0, 'grão', 12);
+    $total = number_format($feijao->calcularPreco($quantidade), 2, ',', '.');
+
+    return "$quantidade kg de {$feijao->getNome()} custam R$ $total";
+})->where('quantidade', '[0-9]+(\.[0-9]+)?');
+
+Route::get('/status', fn () => ['status' => 'ok']);
+Route::get('/manutencao', fn () => response('Voltamos logo!', 503));
+Route::redirect('/inicio', '/ola/visitante');
+Route::get('/produtos/criar', [ProdutoController::class, 'create'])->name('produtos.create');
+Route::post('/produtos', [ProdutoController::class, 'store'])->name('produtos.store');
